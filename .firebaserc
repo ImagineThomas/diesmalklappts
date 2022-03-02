@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "test-bd2b3": {
+      "hosting": {
+        "app": [
+          "test-bd2b3"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "test-bd2b3"
+  }
+}
