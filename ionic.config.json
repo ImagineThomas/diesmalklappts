@@ -1,0 +1,7 @@
+{
+  "name": "diesmalklappts",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
