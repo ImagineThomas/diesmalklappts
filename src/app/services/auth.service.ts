@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { doc, docData, Firestore, setDoc } from '@angular/fire/firestore';
 import {
   Auth,
   signInWithEmailAndPassword,
@@ -10,7 +11,8 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private auth: Auth) {}
+  constructor(private auth: Auth,
+    private firestore: Firestore) {}
  
   async register({ email, password }) {
     try {
@@ -19,6 +21,10 @@ export class AuthService {
         email,
         password
       );
+      const userDocRef = doc(this.firestore, `users/${user.user.uid}`);
+      await setDoc(userDocRef, {
+        email,
+      });
       return user;
     } catch (e) {
       return null;
