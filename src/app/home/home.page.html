@@ -8,7 +8,7 @@
     <ion-title> My Profile </ion-title>
   </ion-toolbar>
 </ion-header>
- 
+
 <ion-content class="ion-padding">
   <div class="preview">
     <ion-avatar (click)="changeImage()">
@@ -20,4 +20,10 @@
       </ng-template>
     </ion-avatar>
   </div>
+  
+    <ion-item fill="solid" class="ion-margin-bottom">
+      <ion-input [(ngModel)]='email'></ion-input>
+    </ion-item>
+    <ion-button type="button" expand="block" color="secondary" (click)="findUserWithMail()">Search</ion-button>
+  
 </ion-content>
