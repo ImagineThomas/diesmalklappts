@@ -42,6 +42,10 @@ export class HomePage {
       console.log(doc.id, " => ", doc.data());
     });
   }
+
+  async generateChatWithUser(){
+
+  }
   
   async changeImage() {
     const image = await Camera.getPhoto({
