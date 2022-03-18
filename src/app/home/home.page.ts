@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
+import { Auth } from '@angular/fire/auth';
 import { ProfilePictureService } from '../services/profile-picture.service';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { doc, docData, Firestore, setDoc } from '@angular/fire/firestore';
+import {Firestore, addDoc, } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-home',
@@ -15,13 +16,15 @@ import { doc, docData, Firestore, setDoc } from '@angular/fire/firestore';
 export class HomePage {
   profile = null;
   email: string = 'email';
+  searchedUser: string ='';
   constructor(
     private profilePictureService: ProfilePictureService,
     private authService: AuthService,
     private router: Router,
     private loadingController: LoadingController,
     private alertController: AlertController,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private auth: Auth,
   ) {
     this.profilePictureService.getUserProfile().subscribe((data) => {
       this.profile = data;
@@ -40,11 +43,16 @@ export class HomePage {
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       console.log(doc.id, " => ", doc.data());
+      this.searchedUser = doc.id;
     });
   }
 
   async generateChatWithUser(){
-
+    await this.findUserWithMail();
+    const docRef = await addDoc(collection(this.firestore, "chats"), {
+      user1: this.searchedUser,
+      user2: this.profile.id,
+    });
   }
   
   async changeImage() {
