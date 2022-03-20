@@ -5,7 +5,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { Auth } from '@angular/fire/auth';
 import { ProfilePictureService } from '../services/profile-picture.service';
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs} from "firebase/firestore";
 import {Firestore, addDoc, doc, setDoc} from '@angular/fire/firestore';
 
 @Component({
@@ -52,15 +52,24 @@ export class HomePage {
       user1: this.searchedUser,
       user2: this.profile.id,
     });
-    const userDocRef = doc(this.firestore, `users/${this.profile.id}`);
-    await setDoc(userDocRef, {
-      chat1: [chatUser1, 12]
-    },
-    {merge: true});
+    //wenn Chat vorhanden -> öffne Chat
+    //ansonsten mache den Rest hier
     const chatUser2 = await addDoc(collection(this.firestore, "chats"),{
       bla: 1,
     });
+    const user1DocRef = doc(this.firestore, `users/${this.profile.id}`);
+    await setDoc(user1DocRef, {
+      chat1: [chatUser1, chatUser2, this.searchedUser, "publicKeyUser2"]
+    },
+    {merge: true});
+    const user2DocRef = doc(this.firestore, `users/${this.searchedUser}`);
+    await setDoc(user2DocRef, {
+      chat1: [chatUser2, chatUser1, this.profile.id, "publicKeyUser1"]
+    },
+    {merge: true});
   }
+
+  
     // gibt dem User die Möglichkeit ein Profilbild zu machen
   async changeImage() {
     const image = await Camera.getPhoto({
