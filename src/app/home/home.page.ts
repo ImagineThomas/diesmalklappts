@@ -45,7 +45,7 @@ export class HomePage {
       this.searchedUser = doc.id;
     });
   }
-      
+      // generiert chat mit einem anderen User
   async generateChatWithUser(){
     await this.findUserWithMail();
     const chatUser1 = await addDoc(collection(this.firestore, "chats"), {
