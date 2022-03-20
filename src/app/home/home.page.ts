@@ -30,15 +30,14 @@ export class HomePage {
       this.profile = data;
     });
   }
-
+    // loggt den User aus
   async logout() {
     await this.authService.logout();
     this.router.navigateByUrl('/', { replaceUrl: true });
   }
-
+      // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID
   async findUserWithMail() {
     const q = query(collection(this.firestore, "users"), where("email", "==", this.email));
-
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
@@ -46,7 +45,7 @@ export class HomePage {
       this.searchedUser = doc.id;
     });
   }
-
+      
   async generateChatWithUser(){
     await this.findUserWithMail();
     const chatUser1 = await addDoc(collection(this.firestore, "chats"), {
@@ -62,7 +61,7 @@ export class HomePage {
       bla: 1,
     });
   }
-  
+    // gibt dem User die Möglichkeit ein Profilbild zu machen
   async changeImage() {
     const image = await Camera.getPhoto({
       quality: 90,
