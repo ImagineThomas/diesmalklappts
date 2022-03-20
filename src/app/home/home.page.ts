@@ -5,8 +5,8 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { Auth } from '@angular/fire/auth';
 import { ProfilePictureService } from '../services/profile-picture.service';
-import { collection, query, where, getDocs} from "firebase/firestore";
-import {Firestore, addDoc, doc, setDoc} from '@angular/fire/firestore';
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { Firestore, addDoc, doc, setDoc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +16,7 @@ import {Firestore, addDoc, doc, setDoc} from '@angular/fire/firestore';
 export class HomePage {
   profile = null;
   email: string = 'email';
-  searchedUser: string ='';
+  searchedUser: string = '';
   constructor(
     private profilePictureService: ProfilePictureService,
     private authService: AuthService,
@@ -30,12 +30,12 @@ export class HomePage {
       this.profile = data;
     });
   }
-    // loggt den User aus
+  // loggt den User aus
   async logout() {
     await this.authService.logout();
     this.router.navigateByUrl('/', { replaceUrl: true });
   }
-      // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID
+  // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID
   async findUserWithMail() {
     const q = query(collection(this.firestore, "users"), where("email", "==", this.email));
     const querySnapshot = await getDocs(q);
@@ -45,8 +45,8 @@ export class HomePage {
       this.searchedUser = doc.id;
     });
   }
-      // generiert chat mit einem anderen User
-  async generateChatWithUser(){
+  // generiert chat mit einem anderen User
+  async generateChatWithUser() {
     await this.findUserWithMail();
     const chatUser1 = await addDoc(collection(this.firestore, "chats"), {
       user1: this.searchedUser,
@@ -54,23 +54,23 @@ export class HomePage {
     });
     //wenn Chat vorhanden -> öffne Chat
     //ansonsten mache den Rest hier
-    const chatUser2 = await addDoc(collection(this.firestore, "chats"),{
+    const chatUser2 = await addDoc(collection(this.firestore, "chats"), {
       bla: 1,
     });
     const user1DocRef = doc(this.firestore, `users/${this.profile.id}`);
     await setDoc(user1DocRef, {
       chat1: [chatUser1, chatUser2, this.searchedUser, "publicKeyUser2"]
     },
-    {merge: true});
+      { merge: true });
     const user2DocRef = doc(this.firestore, `users/${this.searchedUser}`);
     await setDoc(user2DocRef, {
       chat1: [chatUser2, chatUser1, this.profile.id, "publicKeyUser1"]
     },
-    {merge: true});
+      { merge: true });
   }
 
-  
-    // gibt dem User die Möglichkeit ein Profilbild zu machen
+
+  // gibt dem User die Möglichkeit ein Profilbild zu machen
   async changeImage() {
     const image = await Camera.getPhoto({
       quality: 90,
