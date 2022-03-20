@@ -6,7 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { Auth } from '@angular/fire/auth';
 import { ProfilePictureService } from '../services/profile-picture.service';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import {Firestore, addDoc, } from '@angular/fire/firestore';
+import {Firestore, addDoc, doc, setDoc} from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-home',
@@ -49,9 +49,17 @@ export class HomePage {
 
   async generateChatWithUser(){
     await this.findUserWithMail();
-    const docRef = await addDoc(collection(this.firestore, "chats"), {
+    const chatUser1 = await addDoc(collection(this.firestore, "chats"), {
       user1: this.searchedUser,
       user2: this.profile.id,
+    });
+    const userDocRef = doc(this.firestore, `users/${this.profile.id}`);
+    await setDoc(userDocRef, {
+      chat1: [chatUser1, 12]
+    },
+    {merge: true});
+    const chatUser2 = await addDoc(collection(this.firestore, "chats"),{
+      bla: 1,
     });
   }
   
