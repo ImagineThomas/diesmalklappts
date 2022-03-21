@@ -59,12 +59,12 @@ export class HomePage {
     });
     const user1DocRef = doc(this.firestore, `users/${this.profile.id}`);
     await setDoc(user1DocRef, {
-      chat1: [chatUser1, chatUser2, this.searchedUser, "publicKeyUser2"]
+      [this.searchedUser]: [chatUser1, chatUser2, this.searchedUser, "publicKeyUser2"]
     },
       { merge: true });
     const user2DocRef = doc(this.firestore, `users/${this.searchedUser}`);
     await setDoc(user2DocRef, {
-      chat1: [chatUser2, chatUser1, this.profile.id, "publicKeyUser1"]
+      [this.profile.id]: [chatUser2, chatUser1, this.profile.id, "publicKeyUser1"]
     },
       { merge: true });
   }
