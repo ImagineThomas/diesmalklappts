@@ -17,6 +17,7 @@ export class HomePage {
   profile = null;
   email: string = 'email';
   searchedUser: string = '';
+  chatExists: boolean = false;
   constructor(
     private profilePictureService: ProfilePictureService,
     private authService: AuthService,
@@ -40,33 +41,40 @@ export class HomePage {
     const q = query(collection(this.firestore, "users"), where("email", "==", this.email));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
       this.searchedUser = doc.id;
+      if (doc.data().hasOwnProperty(this.profile.id) == true) {
+        this.chatExists = true;
+      }
+      else {
+        this.chatExists = false;
+      }
     });
   }
   // generiert chat mit einem anderen User
   async generateChatWithUser() {
     await this.findUserWithMail();
-    const chatUser1 = await addDoc(collection(this.firestore, "chats"), {
-      user1: this.searchedUser,
-      user2: this.profile.id,
-    });
-    //wenn Chat vorhanden -> öffne Chat
-    //ansonsten mache den Rest hier
-    const chatUser2 = await addDoc(collection(this.firestore, "chats"), {
-      bla: 1,
-    });
-    const user1DocRef = doc(this.firestore, `users/${this.profile.id}`);
-    await setDoc(user1DocRef, {
-      [this.searchedUser]: [chatUser1, chatUser2, this.searchedUser, "publicKeyUser2"]
-    },
-      { merge: true });
-    const user2DocRef = doc(this.firestore, `users/${this.searchedUser}`);
-    await setDoc(user2DocRef, {
-      [this.profile.id]: [chatUser2, chatUser1, this.profile.id, "publicKeyUser1"]
-    },
-      { merge: true });
+    if (this.chatExists == true) {
+      console.log("dieser Chat existiert bereits");
+    }
+    else {
+      const chatUser1 = await addDoc(collection(this.firestore, "chats"), {
+        user1: this.searchedUser,
+        user2: this.profile.id,
+      });
+      const chatUser2 = await addDoc(collection(this.firestore, "chats"), {
+        bla: 1,
+      });
+      const user1DocRef = doc(this.firestore, `users/${this.profile.id}`);
+      await setDoc(user1DocRef, {
+        [this.searchedUser]: [chatUser1, chatUser2, this.searchedUser, "publicKeyUser2"]
+      },
+        { merge: true });
+      const user2DocRef = doc(this.firestore, `users/${this.searchedUser}`);
+      await setDoc(user2DocRef, {
+        [this.profile.id]: [chatUser2, chatUser1, this.profile.id, "publicKeyUser1"]
+      },
+        { merge: true });
+    };
   }
 
 
