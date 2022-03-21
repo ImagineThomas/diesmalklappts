@@ -53,6 +53,7 @@ export class HomePage {
   // generiert chat mit einem anderen User
   async generateChatWithUser() {
     await this.findUserWithMail();
+    //Prüfung ob der Chat bereits existiert -> chatExists wird in findUserWithMail gesetzt
     if (this.chatExists == true) {
       console.log("dieser Chat existiert bereits");
     }
