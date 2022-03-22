@@ -7,6 +7,7 @@ import { Auth } from '@angular/fire/auth';
 import { ProfilePictureService } from '../services/profile-picture.service';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { Firestore, addDoc, doc, setDoc } from '@angular/fire/firestore';
+import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +19,7 @@ export class HomePage {
   email: string = 'email';
   searchedUser: string = '';
   chatExists: boolean = false;
+  chatIdForUrl: string;
   constructor(
     private profilePictureService: ProfilePictureService,
     private authService: AuthService,
@@ -38,7 +40,7 @@ export class HomePage {
   }
   // öffnet den Chat Tab mit Übergabe der Datenbank ChatID
   async openChat(chatID: string) {
-    this.router.navigate(['/chat'], {queryParams: {id:chatID}});
+    this.router.navigate(['/chat'], { queryParams: { id: chatID } });
   }
 
   // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID
@@ -49,6 +51,18 @@ export class HomePage {
       this.searchedUser = doc.id;
       if (doc.data().hasOwnProperty(this.profile.id) == true) {
         this.chatExists = true;
+        // Ermittlung der ChatId für die weitergabe an den Chat Tab
+        // großer Umweg, da doc.data().$[this.profile.id] nicht geht -> andere Lösung wird gesucht
+        var string = stringify(doc.data());
+        console.log(string);
+        var stringLength = this.profile.id.length;
+        var startSearchedChatIdString = string.indexOf(this.profile.id) + stringLength + 1;
+        console.log(startSearchedChatIdString);
+        var endSearchedChatIdString = string.indexOf("&", startSearchedChatIdString);
+        console.log(endSearchedChatIdString);
+        this.chatIdForUrl = string.substring(startSearchedChatIdString, endSearchedChatIdString);
+        console.log(this.chatIdForUrl);
+
       }
       else {
         this.chatExists = false;
@@ -59,7 +73,7 @@ export class HomePage {
   async generateChatWithUser() {
     await this.findUserWithMail();
     //Prüfung ob der Chat bereits existiert -> chatExists wird in findUserWithMail gesetzt
-    if(this.chatExists == false) {
+    if (this.chatExists == false) {
       const chatUser = await addDoc(collection(this.firestore, "chats"), {
         ersteNachricht: "bla",
       });
@@ -68,19 +82,18 @@ export class HomePage {
       var slicedChatPath = chatPath.slice(6);
       const user1DocRef = doc(this.firestore, `users/${this.profile.id}`);
       await setDoc(user1DocRef, {
-        [this.searchedUser]: [slicedChatPath, this.searchedUser, "publicKeyUser2"]
+        [this.searchedUser]: [slicedChatPath, "publicKeyUser2"]
       },
         { merge: true });
       const user2DocRef = doc(this.firestore, `users/${this.searchedUser}`);
       await setDoc(user2DocRef, {
-        [this.profile.id]: [slicedChatPath, this.profile.id, "publicKeyUser1"]
+        [this.profile.id]: [slicedChatPath, "publicKeyUser1"]
       },
         { merge: true });
       this.openChat(slicedChatPath);
     }
-    else{
-      console.log(slicedChatPath);
-      this.openChat(slicedChatPath);
+    else {
+      this.openChat(this.chatIdForUrl);
     }
   }
 
