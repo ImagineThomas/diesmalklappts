@@ -44,6 +44,8 @@ export class ChatPage implements OnInit {
       [timestamp]: this.profile.id + ":" + this.message
     },
       { merge: true });
+    // clear Message Input HTLM Field
+    this.message = "";
 
   }
 
