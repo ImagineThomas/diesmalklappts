@@ -23,10 +23,17 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
+    path: 'chat',
+    loadChildren: () => import('./chat/chat.module').then( m => m.ChatPageModule),
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full',
   },
+
 ];
  
 @NgModule({

@@ -36,6 +36,11 @@ export class HomePage {
     await this.authService.logout();
     this.router.navigateByUrl('/', { replaceUrl: true });
   }
+  // öffnet den Chat Tab mit Übergabe der Datenbank ChatID
+  async openChat(chatID: string) {
+    this.router.navigate(['/chat'], {queryParams: {id:chatID}});
+  }
+
   // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID
   async findUserWithMail() {
     const q = query(collection(this.firestore, "users"), where("email", "==", this.email));
@@ -54,28 +59,29 @@ export class HomePage {
   async generateChatWithUser() {
     await this.findUserWithMail();
     //Prüfung ob der Chat bereits existiert -> chatExists wird in findUserWithMail gesetzt
-    if (this.chatExists == true) {
-      console.log("dieser Chat existiert bereits");
-    }
-    else {
-      const chatUser1 = await addDoc(collection(this.firestore, "chats"), {
-        user1: this.searchedUser,
-        user2: this.profile.id,
+    if(this.chatExists == false) {
+      const chatUser = await addDoc(collection(this.firestore, "chats"), {
+        ersteNachricht: "bla",
       });
-      const chatUser2 = await addDoc(collection(this.firestore, "chats"), {
-        bla: 1,
-      });
+      //umformen von der Reference zu einem ChatID String da man damit besser arbeiten kann
+      var chatPath = chatUser.path;
+      var slicedChatPath = chatPath.slice(6);
       const user1DocRef = doc(this.firestore, `users/${this.profile.id}`);
       await setDoc(user1DocRef, {
-        [this.searchedUser]: [chatUser1, chatUser2, this.searchedUser, "publicKeyUser2"]
+        [this.searchedUser]: [slicedChatPath, this.searchedUser, "publicKeyUser2"]
       },
         { merge: true });
       const user2DocRef = doc(this.firestore, `users/${this.searchedUser}`);
       await setDoc(user2DocRef, {
-        [this.profile.id]: [chatUser2, chatUser1, this.profile.id, "publicKeyUser1"]
+        [this.profile.id]: [slicedChatPath, this.profile.id, "publicKeyUser1"]
       },
         { merge: true });
-    };
+      this.openChat(slicedChatPath);
+    }
+    else{
+      console.log(slicedChatPath);
+      this.openChat(slicedChatPath);
+    }
   }
 
 
