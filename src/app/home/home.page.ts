@@ -49,6 +49,7 @@ export class HomePage {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       this.searchedUser = doc.id;
+      // sieht nach, ob ein Chat zwischen den beiden Personen schon existiert und falls ja wird die ChatId in der globalen Variable gespeichert
       if (doc.data().hasOwnProperty(this.profile.id) == true) {
         this.chatExists = true;
         // Ermittlung der ChatId für die weitergabe an den Chat Tab
