@@ -54,15 +54,10 @@ export class HomePage {
         // Ermittlung der ChatId für die weitergabe an den Chat Tab
         // großer Umweg, da doc.data().$[this.profile.id] nicht geht -> andere Lösung wird gesucht
         var string = stringify(doc.data());
-        console.log(string);
         var stringLength = this.profile.id.length;
         var startSearchedChatIdString = string.indexOf(this.profile.id) + stringLength + 1;
-        console.log(startSearchedChatIdString);
         var endSearchedChatIdString = string.indexOf("&", startSearchedChatIdString);
-        console.log(endSearchedChatIdString);
         this.chatIdForUrl = string.substring(startSearchedChatIdString, endSearchedChatIdString);
-        console.log(this.chatIdForUrl);
-
       }
       else {
         this.chatExists = false;
