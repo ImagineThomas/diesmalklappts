@@ -16,7 +16,7 @@ import { stringify } from 'querystring';
 })
 export class HomePage {
   profile = null;
-  email: string = 'email';
+  email: string;
   searchedUser: string = '';
   chatExists: boolean = false;
   chatIdForUrl: string;

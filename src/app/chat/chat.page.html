@@ -9,6 +9,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-
+<ion-content class="ion-padding">
+  <ion-item fill="solid"class="ion-margin-bottom">
+    <ion-input [(ngModel)]='message'></ion-input>
+  </ion-item>
+  <ion-button type="button" expand="block" color="secondary" (click)="sendMessage()">-></ion-button>
 </ion-content>

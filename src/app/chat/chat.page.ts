@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Firestore, addDoc, doc, setDoc } from '@angular/fire/firestore';
+import { Firestore, addDoc, doc, setDoc, serverTimestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-chat',
@@ -9,7 +9,8 @@ import { Firestore, addDoc, doc, setDoc } from '@angular/fire/firestore';
 })
 export class ChatPage implements OnInit {
 
-  chatID: string = '';
+  chatId: string;
+  message: string;
 
   constructor(
     private router: Router,
@@ -20,11 +21,21 @@ export class ChatPage implements OnInit {
   ngOnInit() {
     //erhält die ChatId aus der URL
     const chatId = this.route.snapshot.queryParamMap.get('id');
-    const docRef = (this.firestore, `chats/${chatId}`);
   }
 
   async backToHome(){
     this.router.navigateByUrl('home', {replaceUrl: true});
+  }
+
+  async sendMessage(){
+    const current = new Date();
+    const timestamp = current.getTime();
+    const chatDocRef = doc(this.firestore, `chats/${this.chatId}`);
+    await setDoc(chatDocRef, {
+      [timestamp]: this.message
+    },
+      { merge: true });
+
   }
 
 }
