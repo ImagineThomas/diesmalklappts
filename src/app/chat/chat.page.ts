@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Firestore, addDoc, doc, setDoc, serverTimestamp } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc} from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-chat',
@@ -20,7 +20,7 @@ export class ChatPage implements OnInit {
 
   ngOnInit() {
     //erhält die ChatId aus der URL
-    const chatId = this.route.snapshot.queryParamMap.get('id');
+    this.chatId = this.route.snapshot.queryParamMap.get('id');
   }
 
   async backToHome(){
