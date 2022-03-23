@@ -38,7 +38,8 @@ export class ProfilePictureService {
       const userDocRef = doc(this.firestore, `users/${user.uid}`);
       await setDoc(userDocRef, {
         imageUrl,
-      });
+      },
+      { merge: true });
       return true;
     } catch (e) {
       return null;
