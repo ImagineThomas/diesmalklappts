@@ -40,7 +40,7 @@ export class HomePage {
   }
   // öffnet den Chat Tab mit Übergabe der Datenbank ChatID
   async openChat(chatID: string) {
-    this.router.navigate(['/chat'], { queryParams: { id: chatID } });
+    this.router.navigate(['/chat'], { queryParams: { id: chatID, email: this.email } });
   }
 
   // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID
@@ -71,7 +71,6 @@ export class HomePage {
     //Prüfung ob der Chat bereits existiert -> chatExists wird in findUserWithMail gesetzt
     if (this.chatExists == false) {
       const chatUser = await addDoc(collection(this.firestore, "chats"), {
-        ersteNachricht: "bla",
       });
       //umformen von der Reference zu einem ChatID String da man damit besser arbeiten kann
       var chatPath = chatUser.path;

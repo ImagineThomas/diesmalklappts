@@ -11,6 +11,7 @@ import { ProfilePictureService } from '../services/profile-picture.service';
 export class ChatPage implements OnInit {
 
   chatId: string;
+  email: string;
   profile = null;
   message: string;
 
@@ -26,8 +27,10 @@ export class ChatPage implements OnInit {
   }
 
   ngOnInit() {
-    //erhält die ChatId aus der URL bei Chatinitialisierung
+    // erhält die ChatId aus der URL bei Chatinitialisierung
     this.chatId = this.route.snapshot.queryParamMap.get('id');
+    // erhält email des Chatpartners aus der URL bei Chatinitialisierung
+    this.email = this.route.snapshot.queryParamMap.get('email');
   }
 
   async backToHome(){
@@ -35,8 +38,8 @@ export class ChatPage implements OnInit {
   }
 
   async sendMessage(){
-    //der timestamp isn bissl strange aber scheint zu funktionieren/ reicht zum ordnen der Nachrichten -> Nachrichten werden eh immer unten hinzugefügt -> nicht neu geordnet
-    //falls man die Zeit cooler angeben will -> andere Funktion nutzen 
+    // der timestamp isn bissl strange aber scheint zu funktionieren/ reicht zum ordnen der Nachrichten -> Nachrichten werden eh immer unten hinzugefügt -> nicht neu geordnet
+    // falls man die Zeit cooler angeben will -> andere Funktion nutzen 
     const current = new Date();
     const timestamp = current.getTime();
     const chatDocRef = doc(this.firestore, `chats/${this.chatId}`);
