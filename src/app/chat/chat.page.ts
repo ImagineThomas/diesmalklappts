@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Firestore, doc, setDoc} from '@angular/fire/firestore';
 import { ProfilePictureService } from '../services/profile-picture.service';
+import { CryptoserviceService } from '../services/cryptoservice.service'
 
 @Component({
   selector: 'app-chat',
