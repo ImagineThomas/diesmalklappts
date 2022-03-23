@@ -86,6 +86,27 @@ export class ChatPage implements OnInit {
 
   }
 
+testo2; //ist mir egal :)
+testo4; //nur var damit log angegeben werden kann
+
+
+  async testo3() {
+    const chatDocRef = doc(this.firestore, "chats/"+ this.chatId + "/messages/message2bisInfinity");//gerade da danach selbersnapshot und cool :)
+    
+    console.log(chatDocRef)
+    const docSnap = await getDoc(chatDocRef);
+      this.testo2 = docSnap.data().timestamp //log ist nur 1 Eintrag, da auch das doku messages2bisInfinity ausgewählt ist :) -->timestamp bei message2 gibt dann nur den timestamp
+      console.log(this.testo2)
+
+      const q22 = query(collection(this.firestore, "chats/"+ this.chatId + "/messages/")); //ungerade da query und dumm
+    console.log(q22)
+    const querySnapshot4 = await getDocs(q22);
+    console.log(querySnapshot4)
+    querySnapshot4.forEach((doc) => {
+      this.testo4 = doc.data() //gibt alle felder hinter messgages an also messages2bisInifnity und messages1bisInfinity die textfelder --> log wären 2 Einträge
+      console.log(this.testo4)
+    })
+  }
 
 
   async sendMessage() {
