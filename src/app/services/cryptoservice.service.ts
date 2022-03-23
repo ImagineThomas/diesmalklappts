@@ -27,8 +27,6 @@ export class CryptoserviceService {
 
   privateKeyFromDB;
   publicKeyFromDB;
-  
-  derivedKeyFromPrKey2;
   profile = null;
 
   async getPrKeyAndPuKeyFromDBAndCreateDerivedKey1(chatRecepient:string ) {

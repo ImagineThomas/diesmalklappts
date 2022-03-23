@@ -14,7 +14,6 @@
   <div *ngIf="chat$|async as chat">
 
     <div *ngFor="let message of chat">
-      *ngFor="i"
       {{message[0]}}
       {{message[1]}}
       
@@ -26,6 +25,7 @@
   <ion-item fill="solid" class="ion-margin-bottom">
     <ion-input [(ngModel)]='message'></ion-input>
   </ion-item>
-  <ion-button type="button" expand="block" color="secondary" (click)="sendMessage()">-></ion-button>
-  <ion-button type="button" expand="block" color="secondary" (click)="fillChatContainerFromDB()">Chat</ion-button>
+  <ion-button type="button" expand="block" color="secondary" (click)="sendMessage()">Nachricht senden</ion-button>
+  <ion-button type="button" expand="block" color="secondary" (click)="fillChatContainerFromDB()">Chatcontainer erstellen</ion-button>
+  
 </ion-content>

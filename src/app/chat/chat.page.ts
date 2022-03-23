@@ -16,6 +16,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { docData } from 'rxfire/firestore';
 import { DocumentData } from 'rxfire/firestore/interfaces';
 import { stringify } from 'querystring';
+import { time } from 'console';
 
 @Component({
   selector: 'app-chat',
@@ -28,8 +29,11 @@ export class ChatPage implements OnInit {
   profile = null;
   message: string;
   chatContainer: string[] = [];
+  chatTestContainer: String[] = [];
+  testo;
 
   chat$: Observable<[string, string][]> = null;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -47,9 +51,9 @@ export class ChatPage implements OnInit {
     // erhält email des Chatpartners aus der URL bei Chatinitialisierung
     this.email = this.route.snapshot.queryParamMap.get('email');
 
-    const d = docData(
-      doc(this.firestore, 'chats/' + this.chatId) as DocumentReference<{
-        chatContainer: string[];
+    const d = docData( //docData erzeugt observable
+      doc(this.firestore, 'chats/' + this.chatId) as DocumentReference<{ //wir holen doc und kriegen docureference
+        chatContainer: string[]; //wie ist der Typ auf der Datenbank
       }>
     ).pipe(
       map((doc) => {
@@ -70,6 +74,10 @@ export class ChatPage implements OnInit {
     this.router.navigateByUrl('home', { replaceUrl: true });
   }
 
+
+
+
+
   async fillChatContainerFromDB() {
     const docRef = doc(this.firestore, `chats/${this.chatId}`);
     const docSnap = await getDoc(docRef);
@@ -85,11 +93,15 @@ export class ChatPage implements OnInit {
     // falls man die Zeit cooler angeben will -> andere Funktion nutzen
     const current = new Date();
     const timestamp = current.getTime();
+ 
     const chatDocRef = doc(this.firestore, `chats/${this.chatId}`);
     await setDoc(
       chatDocRef,
       {
-        [timestamp]: this.profile.id + ':' + this.message,
+
+      [timestamp]: this.profile.id + ':' + this.message,
+      ["chatContainer"]: [this.profile.id + ':' + this.message]
+
       },
       { merge: true }
     );
