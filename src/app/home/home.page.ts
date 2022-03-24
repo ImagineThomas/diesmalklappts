@@ -5,10 +5,11 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { Auth } from '@angular/fire/auth';
 import { ProfilePictureService } from '../services/profile-picture.service';
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { Firestore, addDoc, doc, setDoc } from '@angular/fire/firestore';
 import { stringify } from 'querystring';
 import { ChatService } from '../services/chat.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -21,6 +22,7 @@ export class HomePage {
   searchedUser: string = '';
   chatExists: boolean = false;
   chatIdForUrl: string;
+  chats: Observable<{id: string, email: string}[]>; 
   constructor(
     private profilePictureService: ProfilePictureService,
     private authService: AuthService,
@@ -30,9 +32,12 @@ export class HomePage {
     private firestore: Firestore,
     private auth: Auth,
     private chatServices: ChatService,
+    
   ) {
+    
     this.profilePictureService.getUserProfile().subscribe((data) => {
       this.profile = data;
+      this.chats = chatServices.getChats(data.id)
     });
   }
   // loggt den User aus
@@ -40,7 +45,7 @@ export class HomePage {
     await this.authService.logout();
     this.router.navigateByUrl('/', { replaceUrl: true });
   }
-  
+
 
   // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID
   async findUserWithMail() {
@@ -58,14 +63,20 @@ export class HomePage {
         var startSearchedChatIdString = string.indexOf(this.profile.id) + stringLength + 1;
         var endSearchedChatIdString = string.indexOf("&", startSearchedChatIdString);
         this.chatIdForUrl = string.substring(startSearchedChatIdString, endSearchedChatIdString);
-        console.log(1);
+
       }
       else {
         this.chatExists = false;
       }
     });
-    
+
   }
+  // füllt die Kontaktliste mit Chats mit den ich kommunizieren will, email mitgeben
+  async fillContactlist(sender: string, reciever: string ) {
+    const docRef = doc(this.firestore, `users/${this.profile.id}/contacts/${sender}`);
+    setDoc(docRef, {id:sender});
+  }
+  
   // generiert chat mit einem anderen User
   async generateChatWithUser() {
     await this.findUserWithMail();
@@ -86,15 +97,16 @@ export class HomePage {
         [this.profile.id]: [slicedChatPath, "publicKeyUser1"]
       },
         { merge: true });
-      console.log(1);
+        this.fillContactlist(this.searchedUser, this.profile.id);
+        this.fillContactlist(this.profile.id, this.searchedUser);
       this.chatServices.openChat(slicedChatPath, this.email, this.profile.id);
     }
     else {
       this.chatServices.openChat(this.chatIdForUrl, this.email, this.profile.id);
-      console.log(1);
+      
     }
   }
-  
+
 
   // gibt dem User die Möglichkeit ein Profilbild zu machen
   async changeImage() {

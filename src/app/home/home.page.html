@@ -12,7 +12,10 @@
 <ion-content class="ion-padding">
   <div class="preview">
     <ion-avatar (click)="changeImage()">
-      <img *ngIf="profile?.imageUrl; else placheolder_avatar;" [src]="profile.imageUrl" />
+      <img
+        *ngIf="profile?.imageUrl; else placheolder_avatar;"
+        [src]="profile.imageUrl"
+      />
       <ng-template #placheolder_avatar>
         <div class="fallback">
           <p>Select avatar</p>
@@ -20,12 +23,20 @@
       </ng-template>
     </ion-avatar>
   </div>
-  
-    <ion-item fill="solid" class="ion-margin-bottom">
-      <ion-input [(ngModel)]='email'></ion-input>
-    </ion-item>
-    <ion-button type="button" expand="block" color="secondary" (click)="generateChatWithUser()">Chat</ion-button>
-    
-    
-  
+
+  <ion-item fill="solid" class="ion-margin-bottom">
+    <ion-input [(ngModel)]="email"></ion-input>
+  </ion-item>
+  <ion-button
+    type="button"
+    expand="block"
+    color="secondary"
+    (click)="generateChatWithUser()"
+    >Chat</ion-button
+  >
+  <div *ngIf="chats |async as c">
+    <div *ngFor="let m of c">
+      {{m.email}}<br>{{m.id}}
+  </div>
+</div>
 </ion-content>
