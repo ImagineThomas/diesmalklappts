@@ -59,6 +59,7 @@ export class HomePage {
         var startSearchedChatIdString = string.indexOf(this.profile.id) + stringLength + 1;
         var endSearchedChatIdString = string.indexOf("&", startSearchedChatIdString);
         this.chatIdForUrl = string.substring(startSearchedChatIdString, endSearchedChatIdString);
+        console.log(1);
       }
       else {
         this.chatExists = false;
@@ -85,10 +86,12 @@ export class HomePage {
         [this.profile.id]: [slicedChatPath, "publicKeyUser1"]
       },
         { merge: true });
+      console.log(1);
       this.openChat(slicedChatPath);
     }
     else {
       this.openChat(this.chatIdForUrl);
+      console.log(1);
     }
   }
 

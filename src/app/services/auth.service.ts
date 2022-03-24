@@ -12,10 +12,14 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private auth: Auth,
+  constructor(
+    private auth: Auth,
     private profilePictureService: ProfilePictureService,
     private firestore: Firestore) {}
     profile = null;
+
+
+
   async register({ email, password }) {
     try {
       const user = await createUserWithEmailAndPassword(
@@ -33,6 +37,7 @@ export class AuthService {
       const userDocRef = doc(this.firestore, `users/${user.user.uid}`);
       await setDoc(userDocRef, {
         email,
+        uid: user.user.uid,
       });  
 
 
