@@ -40,7 +40,7 @@ export class HomePage {
   }
   // öffnet den Chat Tab mit Übergabe der Datenbank ChatID
   async openChat(chatID: string) {
-    this.router.navigate(['/chat'], { queryParams: { id: chatID, email: this.email } });
+    this.router.navigate(['/chat'], { queryParams: { id: chatID, email: this.email, userId: this.profile.id } });
   }
 
   // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID

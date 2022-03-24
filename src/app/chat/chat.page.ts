@@ -19,8 +19,8 @@ export class ChatPage implements OnInit {
   newMsg = '';
   chatId: string;
   email: string;
-  profile = null;
   message: string;
+  userId: string;
 
   constructor(
     private router: Router,
@@ -29,25 +29,22 @@ export class ChatPage implements OnInit {
     private profilePictureService: ProfilePictureService,
     private chatService: ChatService,
   ) {
-    this.profilePictureService.getUserProfile().subscribe((data) => {
-      this.profile = data;
-    });
   }
 
   ngOnInit() {
-    console.log(1);
+    this.userId = this.route.snapshot.queryParamMap.get('userId');
     // erhält die ChatId aus der URL bei Chatinitialisierung
     this.chatId = this.route.snapshot.queryParamMap.get('id'); //problem wenn 2 mit gleichem user schreiben
     // erhält email des Chatpartners aus der URL bei Chatinitialisierung
     this.email = this.route.snapshot.queryParamMap.get('email');
+    this.messages = this.chatService.getChatMessages(this.userId, this.chatId);
     console.log(1);
-    this.messages = this.chatService.getChatMessages(this.profile.id, this.chatId);
 
     
   }
 
   sendMessage() {
-    this.chatService.addChatMessage(this.chatId, this.newMsg, this.profile.id).then(() => {
+    this.chatService.addChatMessage(this.chatId, this.newMsg, this.userId).then(() => {
       this.newMsg = '';
       this.content.scrollToBottom();
     });
