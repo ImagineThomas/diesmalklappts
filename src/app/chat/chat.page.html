@@ -23,9 +23,9 @@
 
 
   <ion-item fill="solid" class="ion-margin-bottom">
-    <ion-input [(ngModel)]='message'></ion-input>
+    <ion-textarea autoGrow="true" class="message-input" rows="1" maxLength="500 "[(ngModel)]='message'></ion-textarea>
   </ion-item>
-  <ion-button type="button" expand="block" color="secondary" (click)="sendMessage()">Nachricht senden</ion-button>
+  <ion-button type="button" expand="block" color="secondary" [disabled]="message === ''"(click)="sendMessage()">Nachricht senden</ion-button>
   <ion-button type="button" expand="block" color="secondary" (click)="fillChatContainerFromDB()">Chatcontainer erstellen</ion-button>
   <ion-button type="button" expand="block" color="secondary" (click)="testo3()">testo3</ion-button>
 </ion-content>
