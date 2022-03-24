@@ -8,6 +8,7 @@ import { ProfilePictureService } from '../services/profile-picture.service';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { Firestore, addDoc, doc, setDoc } from '@angular/fire/firestore';
 import { stringify } from 'querystring';
+import { ChatService } from '../services/chat.service';
 
 @Component({
   selector: 'app-home',
@@ -28,6 +29,7 @@ export class HomePage {
     private alertController: AlertController,
     private firestore: Firestore,
     private auth: Auth,
+    private chatServices: ChatService,
   ) {
     this.profilePictureService.getUserProfile().subscribe((data) => {
       this.profile = data;
@@ -38,10 +40,7 @@ export class HomePage {
     await this.authService.logout();
     this.router.navigateByUrl('/', { replaceUrl: true });
   }
-  // öffnet den Chat Tab mit Übergabe der Datenbank ChatID
-  async openChat(chatID: string) {
-    this.router.navigate(['/chat'], { queryParams: { id: chatID, email: this.email, userId: this.profile.id } });
-  }
+  
 
   // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID
   async findUserWithMail() {
@@ -65,6 +64,7 @@ export class HomePage {
         this.chatExists = false;
       }
     });
+    
   }
   // generiert chat mit einem anderen User
   async generateChatWithUser() {
@@ -87,14 +87,14 @@ export class HomePage {
       },
         { merge: true });
       console.log(1);
-      this.openChat(slicedChatPath);
+      this.chatServices.openChat(slicedChatPath, this.email, this.profile.id);
     }
     else {
-      this.openChat(this.chatIdForUrl);
+      this.chatServices.openChat(this.chatIdForUrl, this.email, this.profile.id);
       console.log(1);
     }
   }
-
+  
 
   // gibt dem User die Möglichkeit ein Profilbild zu machen
   async changeImage() {

@@ -3,6 +3,7 @@ import firebase from 'firebase/compat/app';
 import { switchMap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs'
 import { AngularFirestore } from '@angular/fire/compat/firestore/';
+import { Router } from '@angular/router';
 
 export interface User {
   uid: string;
@@ -26,6 +27,7 @@ export class ChatService {
 
   constructor(
     private afs: AngularFirestore,
+    private router: Router,
   ) { }
 
 
@@ -67,6 +69,11 @@ export class ChatService {
     }
     return 'Deleted';
   }
-
+  // öffnet den Chat Tab mit Übergabe der Datenbank ChatID
+  async openChat(chatID: string, searchedUserEmail: string, profileID: string) {
+    this.router.navigate(['/chat'], { queryParams: { id: chatID, email: searchedUserEmail, userId: profileID } });
+  }
 }
+
+
 
