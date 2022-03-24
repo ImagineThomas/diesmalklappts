@@ -34,11 +34,10 @@ export class ChatPage implements OnInit {
   ngOnInit() {
     this.userId = this.route.snapshot.queryParamMap.get('userId');
     // erhält die ChatId aus der URL bei Chatinitialisierung
-    this.chatId = this.route.snapshot.queryParamMap.get('id'); //problem wenn 2 mit gleichem user schreiben
+    this.chatId = this.route.snapshot.queryParamMap.get('id');
     // erhält email des Chatpartners aus der URL bei Chatinitialisierung
     this.email = this.route.snapshot.queryParamMap.get('email');
     this.messages = this.chatService.getChatMessages(this.userId, this.chatId);
-    console.log(1);
 
     
   }
