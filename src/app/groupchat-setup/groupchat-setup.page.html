@@ -10,5 +10,16 @@
 </ion-header>
 
 <ion-content>
-
+  <div>
+    <ion-item no-lines text-wrap class="item" *ngFor="let member of groupMember" >
+      <p>{{member}}</p>
+      <ion-button type="button" expand="block" color="secondary" (click)="deleteFromGroup(member)">x</ion-button>
+      </ion-item>
+  </div>
+  <div>
+    <ion-input [(ngModel)]="groupMemberInput"></ion-input>
+    <ion-button type="button" expand="block" color="secondary" (click)="addToGroup()">zur Gruppe hinzufügen</ion-button>
+    <ion-input [(ngModel)]="groupName"></ion-input>
+    <ion-button type="button" expand="block" color="secondary" (click)="setupGroup()">Gruppe erstellen</ion-button>
+  </div>
 </ion-content>

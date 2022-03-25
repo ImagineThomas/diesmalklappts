@@ -46,31 +46,6 @@ export class HomePage {
   }
 
 
-  // // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID
-  // async findUserWithMail() {
-  //   const q = query(collection(this.firestore, "users"), where("email", "==", this.email));
-  //   const querySnapshot = await getDocs(q);
-  //   querySnapshot.forEach((doc) => {
-  //     this.searchedUser = doc.id;
-  //     // sieht nach, ob ein Chat zwischen den beiden Personen schon existiert und falls ja wird die ChatId in der globalen Variable gespeichert
-  //     if (doc.data().hasOwnProperty(this.profile.id) == true) {
-  //       this.chatExists = true;
-  //       // Ermittlung der ChatId für die weitergabe an den Chat Tab
-  //       // großer Umweg, da doc.data().$[this.profile.id] nicht geht -> andere Lösung wird gesucht
-  //       var string = stringify(doc.data());
-  //       var stringLength = this.profile.id.length;
-  //       var startSearchedChatIdString = string.indexOf(this.profile.id) + stringLength + 1;
-  //       var endSearchedChatIdString = string.indexOf("&", startSearchedChatIdString);
-  //       this.chatIdForUrl = string.substring(startSearchedChatIdString, endSearchedChatIdString);
-
-  //     }
-  //     else {
-  //       this.chatExists = false;
-  //     }
-  //   });
-
-  // }
-
   // Funktion zum ermitteln der Uid eines Users anhand einer email
   async findUserWithMail(searchedEmail: string) {
     const q = query(collection(this.firestore, "users"), where("email", "==", searchedEmail));
@@ -98,7 +73,7 @@ export class HomePage {
   // füllt die Kontaktliste mit Chats mit den ich kommunizieren will, email mitgeben
   async fillContactlist(sender: string, reciever: string) {
     const docRef = doc(this.firestore, `users/${sender}/contacts/${reciever}`);
-    setDoc(docRef, { id: sender });
+    setDoc(docRef, { id: reciever });
   }
 
   // generiert chat mit einem anderen User oder öffnet ihn nur falls schon vorhanden
