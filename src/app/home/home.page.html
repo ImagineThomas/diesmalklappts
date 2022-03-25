@@ -23,15 +23,21 @@
       </ng-template>
     </ion-avatar>
   </div>
-
+  <br>
+  <br>
   <ion-item fill="solid" class="ion-margin-bottom">
     <ion-input [(ngModel)]="email"></ion-input>
   </ion-item>
   <ion-button type="button" expand="block" color="secondary" (click)="generateChatWithUser()">Chat</ion-button>
+  <br>
+  <br>
+  <ion-button type="button" expand="block" color="secondary" (click)="openGroupchatSetupPage()">Gruppenchat erstellen</ion-button>
+  <br>
+  <br>
   <p>Chat Öffnen mit</p>
   <div *ngIf="chats |async as c">
     <div *ngFor="let m of c">
       <ion-button type="button" expand="block" color="secondary" (click)="openChat(m.id, m.email)">{{m.email}}</ion-button>
+    </div>
   </div>
-</div>
 </ion-content>

@@ -29,6 +29,12 @@ const routes: Routes = [
   },
   
   {
+    path: 'groupchat-setup',
+    loadChildren: () => import('./groupchat-setup/groupchat-setup.module').then( m => m.GroupchatSetupPageModule),
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full',

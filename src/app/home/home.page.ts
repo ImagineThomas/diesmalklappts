@@ -138,6 +138,10 @@ export class HomePage {
   }
 
 
+  async openGroupchatSetupPage(){
+    this.router.navigate(['/groupchat-setup']);
+  }
+
   // gibt dem User die Möglichkeit ein Profilbild zu machen
   async changeImage() {
     const image = await Camera.getPhoto({
