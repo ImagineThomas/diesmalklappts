@@ -5,9 +5,8 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { Auth } from '@angular/fire/auth';
 import { ProfilePictureService } from '../services/profile-picture.service';
-import { collection, query, where, getDocs, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
-import { Firestore, addDoc, doc, setDoc } from '@angular/fire/firestore';
-import { stringify } from 'querystring';
+import { collection, query, where, getDocs} from "firebase/firestore";
+import { Firestore, addDoc, doc, setDoc, getDoc } from '@angular/fire/firestore';
 import { ChatService } from '../services/chat.service';
 import { Observable } from 'rxjs';
 
@@ -20,9 +19,9 @@ export class HomePage {
   profile = null;
   email: string;
   searchedUser: string = '';
-  chatExists: boolean = false;
   chatIdForUrl: string;
-  chats: Observable<{id: string, email: string}[]>; 
+  chatExists: boolean;
+  chats: Observable<{ id: string, email: string }[]>;
   constructor(
     private profilePictureService: ProfilePictureService,
     private authService: AuthService,
@@ -32,9 +31,9 @@ export class HomePage {
     private firestore: Firestore,
     private auth: Auth,
     private chatServices: ChatService,
-    
+
   ) {
-    
+
     this.profilePictureService.getUserProfile().subscribe((data) => {
       this.profile = data;
       this.chats = chatServices.getChats(data.id)
@@ -47,63 +46,89 @@ export class HomePage {
   }
 
 
-  // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID
-  async findUserWithMail() {
-    const q = query(collection(this.firestore, "users"), where("email", "==", this.email));
+  // // gleicht die eingegebene Email mit der Datenbank ab und vergibt, wenn gefunden der Email eine ID
+  // async findUserWithMail() {
+  //   const q = query(collection(this.firestore, "users"), where("email", "==", this.email));
+  //   const querySnapshot = await getDocs(q);
+  //   querySnapshot.forEach((doc) => {
+  //     this.searchedUser = doc.id;
+  //     // sieht nach, ob ein Chat zwischen den beiden Personen schon existiert und falls ja wird die ChatId in der globalen Variable gespeichert
+  //     if (doc.data().hasOwnProperty(this.profile.id) == true) {
+  //       this.chatExists = true;
+  //       // Ermittlung der ChatId für die weitergabe an den Chat Tab
+  //       // großer Umweg, da doc.data().$[this.profile.id] nicht geht -> andere Lösung wird gesucht
+  //       var string = stringify(doc.data());
+  //       var stringLength = this.profile.id.length;
+  //       var startSearchedChatIdString = string.indexOf(this.profile.id) + stringLength + 1;
+  //       var endSearchedChatIdString = string.indexOf("&", startSearchedChatIdString);
+  //       this.chatIdForUrl = string.substring(startSearchedChatIdString, endSearchedChatIdString);
+
+  //     }
+  //     else {
+  //       this.chatExists = false;
+  //     }
+  //   });
+
+  // }
+
+  // Funktion zum ermitteln der Uid eines Users anhand einer email
+  async findUserWithMail(searchedEmail: string) {
+    const q = query(collection(this.firestore, "users"), where("email", "==", searchedEmail));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       this.searchedUser = doc.id;
-      // sieht nach, ob ein Chat zwischen den beiden Personen schon existiert und falls ja wird die ChatId in der globalen Variable gespeichert
-      if (doc.data().hasOwnProperty(this.profile.id) == true) {
-        this.chatExists = true;
-        // Ermittlung der ChatId für die weitergabe an den Chat Tab
-        // großer Umweg, da doc.data().$[this.profile.id] nicht geht -> andere Lösung wird gesucht
-        var string = stringify(doc.data());
-        var stringLength = this.profile.id.length;
-        var startSearchedChatIdString = string.indexOf(this.profile.id) + stringLength + 1;
-        var endSearchedChatIdString = string.indexOf("&", startSearchedChatIdString);
-        this.chatIdForUrl = string.substring(startSearchedChatIdString, endSearchedChatIdString);
-
-      }
-      else {
-        this.chatExists = false;
-      }
     });
+  }
+
+  // Funktion zum prüfen, ob ein Chat zwischen User und Recipient schon existiert
+  async checkForExistingChatWithUser(user: string, recipient: string) {
+    const docRef = doc(this.firestore, `users/${user}/chats/${recipient}`);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      this.chatIdForUrl = docSnap.data().chatId;
+      this.chatExists = true;
+
+    } else {
+      this.chatExists = false;
+    }
 
   }
+
   // füllt die Kontaktliste mit Chats mit den ich kommunizieren will, email mitgeben
-  async fillContactlist(sender: string, reciever: string ) {
-    const docRef = doc(this.firestore, `users/${this.profile.id}/contacts/${sender}`);
-    setDoc(docRef, {id:sender});
+  async fillContactlist(sender: string, reciever: string) {
+    const docRef = doc(this.firestore, `users/${sender}/contacts/${reciever}`);
+    setDoc(docRef, { id: sender });
   }
-  
-  // generiert chat mit einem anderen User
+
+  // generiert chat mit einem anderen User oder öffnet ihn nur falls schon vorhanden
   async generateChatWithUser() {
-    await this.findUserWithMail();
-    //Prüfung ob der Chat bereits existiert -> chatExists wird in findUserWithMail gesetzt
+    // ermitteln der Uid der eigegebenen Mail
+    await this.findUserWithMail(this.email);
+    // prüfen, ob ein Chat mit dem gesuchten User schon existiert
+    await this.checkForExistingChatWithUser(this.profile.id, this.searchedUser);
     if (this.chatExists == false) {
       const chatUser = await addDoc(collection(this.firestore, "chats"), {
       });
       //umformen von der Reference zu einem ChatID String da man damit besser arbeiten kann
       var chatPath = chatUser.path;
       var slicedChatPath = chatPath.slice(6);
-      const user1DocRef = doc(this.firestore, `users/${this.profile.id}`);
-      await setDoc(user1DocRef, {
-        [this.searchedUser]: [slicedChatPath, "publicKeyUser2"]
-      },
-        { merge: true });
-      const user2DocRef = doc(this.firestore, `users/${this.searchedUser}`);
-      await setDoc(user2DocRef, {
-        [this.profile.id]: [slicedChatPath, "publicKeyUser1"]
-      },
-        { merge: true });
-        this.fillContactlist(this.searchedUser, this.profile.id);
-        this.fillContactlist(this.profile.id, this.searchedUser);
+      await setDoc(doc(this.firestore, `users/${this.profile.id}/chats/${this.searchedUser}`), {
+        chatId: slicedChatPath,
+        recipientId: this.searchedUser,
+        publicKeyRecipient: "PublicKey2",
+      });
+      await setDoc(doc(this.firestore, `users/${this.searchedUser}/chats/${this.profile.id}`), {
+        chatId: slicedChatPath,
+        publicKeyRecipient: "PublicKey1",
+      });
+      this.fillContactlist(this.searchedUser, this.profile.id);
+      this.fillContactlist(this.profile.id, this.searchedUser);
       this.chatServices.openChat(slicedChatPath, this.email, this.profile.id);
     }
     else {
       this.chatServices.openChat(this.chatIdForUrl, this.email, this.profile.id);
-      
+
     }
   }
 
