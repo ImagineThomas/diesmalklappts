@@ -9,6 +9,7 @@ import { collection, query, where, getDocs} from "firebase/firestore";
 import { Firestore, addDoc, doc, setDoc, getDoc } from '@angular/fire/firestore';
 import { ChatService } from '../services/chat.service';
 import { Observable } from 'rxjs';
+import { DatabaseOperationsService } from '../services/database-operations.service';
 
 @Component({
   selector: 'app-home',
@@ -31,6 +32,7 @@ export class HomePage {
     private firestore: Firestore,
     private auth: Auth,
     private chatServices: ChatService,
+    private dos: DatabaseOperationsService,
 
   ) {
 
@@ -43,16 +45,6 @@ export class HomePage {
   async logout() {
     await this.authService.logout();
     this.router.navigateByUrl('/', { replaceUrl: true });
-  }
-
-
-  // Funktion zum ermitteln der Uid eines Users anhand einer email
-  async findUserWithMail(searchedEmail: string) {
-    const q = query(collection(this.firestore, "users"), where("email", "==", searchedEmail));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      this.searchedUser = doc.id;
-    });
   }
 
   // Funktion zum prüfen, ob ein Chat zwischen User und Recipient schon existiert
@@ -79,7 +71,8 @@ export class HomePage {
   // generiert chat mit einem anderen User oder öffnet ihn nur falls schon vorhanden
   async generateChatWithUser() {
     // ermitteln der Uid der eigegebenen Mail
-    await this.findUserWithMail(this.email);
+    await this.dos.findUserWithMail(this.email);
+    this.searchedUser = this.dos.searchedUser;
     // prüfen, ob ein Chat mit dem gesuchten User schon existiert
     await this.checkForExistingChatWithUser(this.profile.id, this.searchedUser);
     if (this.chatExists == false) {
