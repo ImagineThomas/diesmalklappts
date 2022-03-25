@@ -25,6 +25,7 @@ export interface Message {
 export class ChatService {
   constructor(private afs: AngularFirestore, private router: Router) { }
 
+
   async addChatMessage(chatId, msg, currentUserUId) {
     return this.afs.collection(`chats/${chatId}/messages`).add({
       msg: msg,
@@ -49,6 +50,8 @@ export class ChatService {
       })
     );
   }
+
+  // sucht alle Kontakte, die im CurrentUser hinterlegt sind ( Kontakt bedeutet hier nur = Chat mit dieser Person existiert)
   getChats(currentUserUid) {
     const chats = this.afs
       .collection(`users/${currentUserUid}/contacts`)
@@ -64,11 +67,14 @@ export class ChatService {
       })
     );
   }
+
+
   private getUsers() {
     return this.afs
       .collection('users')
       .valueChanges({ idField: 'uid' }) as Observable<User[]>;
   }
+
 
   private getUserForMsg(msgFromId, users: User[]): string {
     for (let usr of users) {
@@ -78,6 +84,8 @@ export class ChatService {
     }
     return 'Deleted';
   }
+
+
   // öffnet den Chat Tab mit Übergabe der Datenbank ChatID
   async openChat(chatID: string, searchedUserEmail: string, profileID: string) {
     this.router.navigate(['/chat'], {
