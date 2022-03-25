@@ -132,6 +132,11 @@ export class HomePage {
     }
   }
 
+  async openChat(recipientId: string, recipient: string){
+    await this.checkForExistingChatWithUser(this.profile.id, recipientId);
+    this.chatServices.openChat(this.chatIdForUrl, recipient, this.profile.id);
+  }
+
 
   // gibt dem User die Möglichkeit ein Profilbild zu machen
   async changeImage() {

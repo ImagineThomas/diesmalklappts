@@ -27,16 +27,11 @@
   <ion-item fill="solid" class="ion-margin-bottom">
     <ion-input [(ngModel)]="email"></ion-input>
   </ion-item>
-  <ion-button
-    type="button"
-    expand="block"
-    color="secondary"
-    (click)="generateChatWithUser()"
-    >Chat</ion-button
-  >
+  <ion-button type="button" expand="block" color="secondary" (click)="generateChatWithUser()">Chat</ion-button>
+  <p>Chat Öffnen mit</p>
   <div *ngIf="chats |async as c">
     <div *ngFor="let m of c">
-      {{m.email}}<br>{{m.id}}
+      <ion-button type="button" expand="block" color="secondary" (click)="openChat(m.id, m.email)">{{m.email}}</ion-button>
   </div>
 </div>
 </ion-content>
