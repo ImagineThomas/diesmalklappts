@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Firestore} from '@angular/fire/firestore';
-import { ProfilePictureService } from '../services/profile-picture.service';
 import { Observable } from 'rxjs';
 import { ChatService } from '../services/chat.service';
 import { IonContent } from '@ionic/angular';
@@ -29,7 +28,6 @@ export class ChatPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private firestore: Firestore,
-    private profilePictureService: ProfilePictureService,
     private chatService: ChatService,
     private cryptoserviceService: CryptoserviceService,
   ) {
@@ -44,7 +42,7 @@ export class ChatPage implements OnInit {
     // erhält email des Chatpartners aus der URL bei Chatinitialisierung
     this.email = this.route.snapshot.queryParamMap.get('email');
     
-        //UserID des gegenüber holen
+        //UserID des gegenüber holen (DURCH DOS Funktion ersetzbar)
   const q = await query(collection(this.firestore, "users"), where("email", "==", this.email));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
@@ -61,6 +59,7 @@ export class ChatPage implements OnInit {
   }
 
   async sendMessage() {
+    //(DURCH DOS Funktion ersetzbar)
     const q = query(collection(this.firestore, "users"), where("email", "==", this.email));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {

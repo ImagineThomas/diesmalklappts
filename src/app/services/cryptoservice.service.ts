@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { AlertController, LoadingController } from '@ionic/angular';
-import { AuthService } from '../services/auth.service';
-import { Auth } from '@angular/fire/auth';
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { Firestore, getDoc, addDoc, doc, setDoc } from '@angular/fire/firestore';
-import { ChatPageModule } from '../chat/chat.module';
+import { Firestore, getDoc, doc} from '@angular/fire/firestore';
+
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +8,8 @@ import { ChatPageModule } from '../chat/chat.module';
 export class CryptoserviceService {
 
   constructor(
-    private authService: AuthService,
-    private router: Router,
-    private loadingController: LoadingController,
-    private alertController: AlertController,
     private firestore: Firestore,
-    private auth: Auth,
+
   ) { }
 
 
