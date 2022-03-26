@@ -10,6 +10,7 @@ import { Firestore, addDoc, doc, setDoc, getDoc } from '@angular/fire/firestore'
 import { ChatService } from '../services/chat.service';
 import { Observable } from 'rxjs';
 import { DatabaseOperationsService } from '../services/database-operations.service';
+import { GroupchatService } from '../services/groupchat.service';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +25,8 @@ export class HomePage {
   chatExists: boolean;
   publicKeyFromDB;
   chats: Observable<{ id: string, email: string }[]>;
+  groupChats: Observable<{id: string}[]>;
+
   constructor(
     private profilePictureService: ProfilePictureService,
     private authService: AuthService,
@@ -31,15 +34,16 @@ export class HomePage {
     private loadingController: LoadingController,
     private alertController: AlertController,
     private firestore: Firestore,
-    private auth: Auth,
     private chatServices: ChatService,
     private dos: DatabaseOperationsService,
+    private gcs : GroupchatService,
 
   ) {
 
     this.profilePictureService.getUserProfile().subscribe((data) => {
       this.profile = data;
-      this.chats = chatServices.getChats(data.id)
+      this.chats = chatServices.getChats(data.id);
+      this.groupChats = gcs.getGroupChats(data.id)
     });
   }
   // loggt den User aus
@@ -64,9 +68,9 @@ export class HomePage {
   }
 
   // füllt die Kontaktliste mit Chats mit den ich kommunizieren will, email mitgeben
-  async fillContactlist(sender: string, reciever: string) {
-    const docRef = doc(this.firestore, `users/${sender}/contacts/${reciever}`);
-    setDoc(docRef, { id: reciever });
+  async fillContactlist(sender: string, receiver: string) {
+    const docRef = doc(this.firestore, `users/${sender}/contacts/${receiver}`);
+    setDoc(docRef, { id: receiver });
   }
 
   // generiert chat mit einem anderen User oder öffnet ihn nur falls schon vorhanden
@@ -149,4 +153,9 @@ export class HomePage {
       }
     }
   }
+
+  async openGroupChat(groupChatID : string){
+    this.gcs.openGroupChat( groupChatID);
+  }
+
 }

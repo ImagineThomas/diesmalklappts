@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { doc, docData, Firestore, setDoc } from '@angular/fire/firestore';
+import { doc, Firestore, setDoc } from '@angular/fire/firestore';
 import { ProfilePictureService } from '../services/profile-picture.service';
 import {
   Auth,

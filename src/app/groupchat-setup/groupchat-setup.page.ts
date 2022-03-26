@@ -83,7 +83,9 @@ export class GroupchatSetupPage implements OnInit {
         email: this.groupMember[i],
         admin: false,
       });
-      await setDoc(doc(this.firestore, `users/${groupMemberId}/groupchats/${slicedChatPath}`), {})
+      await setDoc(doc(this.firestore, `users/${groupMemberId}/groupchats/${slicedChatPath}`), {
+        groupName: this.groupName,
+      })
     }
 
     const alert = await this.alertController.create({

@@ -40,4 +40,10 @@
       <ion-button type="button" expand="block" color="secondary" (click)="openChat(m.id, m.email)">{{m.email}}</ion-button>
     </div>
   </div>
+
+  <div *ngIf="groupChats |async as gc">
+    <div *ngFor="let m of gc">
+      <ion-button type="button" expand="block" color="secondary" (click)="openGroupChat(m.id)"></ion-button>
+    </div>
+  </div>
 </ion-content>
