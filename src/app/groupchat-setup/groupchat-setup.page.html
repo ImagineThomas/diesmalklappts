@@ -17,9 +17,9 @@
       </ion-item>
   </div>
   <div>
-    <ion-input [(ngModel)]="groupMemberInput"></ion-input>
+    <ion-input placeholder="email" [(ngModel)]="groupMemberInput"></ion-input>
     <ion-button type="button" expand="block" color="secondary" (click)="addToGroup()">zur Gruppe hinzufügen</ion-button>
-    <ion-input [(ngModel)]="groupName"></ion-input>
+    <ion-input placeholder="Gruppenname"[(ngModel)]="groupName"></ion-input>
     <ion-button type="button" expand="block" color="secondary" (click)="setupGroup()">Gruppe erstellen</ion-button>
   </div>
 </ion-content>

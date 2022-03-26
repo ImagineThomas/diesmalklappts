@@ -15,7 +15,7 @@ export class GroupchatSetupPage implements OnInit {
 
   groupMemberInput: string;
   groupMember: Array<string> = [];
-  groupName: string;
+  groupName: "";
   profile = null;
 
   constructor(
@@ -51,6 +51,7 @@ export class GroupchatSetupPage implements OnInit {
   }
 
   async addToGroup() {
+    this.dos.searchedUser = "";
     await this.dos.findUserWithMail(this.groupMemberInput);
     if (this.dos.searchedUser == "") {
       this.groupMemberInput = "";
@@ -89,7 +90,11 @@ export class GroupchatSetupPage implements OnInit {
     }
     await setDoc(doc(this.firestore, `users/${this.profile.id}/groupchats/${slicedChatPath}`), {
       groupName: this.groupName,
-    })
+    });
+    await setDoc(doc(this.firestore, `groupchats/${slicedChatPath}/groupmember/${this.profile.de}`), {
+      email: this.profile.email,
+      admin: true,
+    });
 
     const alert = await this.alertController.create({
       header: 'Erfolgreich',

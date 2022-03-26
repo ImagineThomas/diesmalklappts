@@ -5,7 +5,7 @@
         <ion-icon slot="icon-only" name="log-out"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title> My Profile </ion-title>
+    <ion-title> Mein Profil </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -26,7 +26,7 @@
   <br>
   <br>
   <ion-item fill="solid" class="ion-margin-bottom">
-    <ion-input [(ngModel)]="email"></ion-input>
+    <ion-input placeholder="email" [(ngModel)]="email"></ion-input>
   </ion-item>
   <ion-button type="button" expand="block" color="secondary" (click)="generateChatWithUser()">Chat</ion-button>
   <br>
@@ -34,13 +34,14 @@
   <ion-button type="button" expand="block" color="secondary" (click)="openGroupchatSetupPage()">Gruppenchat erstellen</ion-button>
   <br>
   <br>
-  <p>Chat Öffnen mit</p>
+  <p>Meine Chats</p>
   <div *ngIf="chats |async as c">
     <div *ngFor="let m of c">
       <ion-button type="button" expand="block" color="secondary" (click)="openChat(m.id, m.email)">{{m.email}}</ion-button>
     </div>
   </div>
-  <p>Gruppenchats</p>
+  <br>
+  <p>Meine Gruppenchats</p>
   <div *ngIf="groupChats |async as gc">
     <div *ngFor="let m of gc">
       <ion-button type="button" expand="block" color="secondary" (click)="openGroupChat(m.id, m.groupName)">{{m.groupName}}</ion-button>
