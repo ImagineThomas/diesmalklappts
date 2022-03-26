@@ -10,6 +10,11 @@ export interface User {
   email: string;
 }
 
+export interface GroupChat{
+  uid: string;
+  groupName: string;
+}
+
 export interface Message {
   createdAt: firebase.firestore.FieldValue;
   id: string;
@@ -48,6 +53,13 @@ export class GroupchatService {
     return 'Deleted';
   }
 
+
+  private groupChats() {
+    return this.afs
+      .collection('groupchats')
+      .valueChanges({ idField: 'uid' }) as Observable<GroupChat[]>;
+  }
+
   async getChatMessages(currentUserUid, chatId): Promise<any> {
     const messages = this.afs
       .collection(`groupchats/${chatId}/messages`, (ref) => ref.orderBy('createdAt'))
@@ -69,9 +81,17 @@ export class GroupchatService {
   getGroupChats(currentUserUid) {
     const groupchats = this.afs
       .collection(`users/${currentUserUid}/groupchats`)
-      .valueChanges({ idField: 'id' }) as Observable<{ id: string, groupName: string }[]>;
-
-      return groupchats
+      .valueChanges({ idField: 'id' }) as Observable<{ id: string}[]>;
+      const groupchat = this.groupChats();
+      return combineLatest(groupchat, groupchats).pipe(
+        map(([groupchat, groupchats]) => {
+          const c: { id: string; groupName: string }[] = [];
+          for (let m of groupchats) {
+            c.push({ ...m, groupName: groupchat.find((u) => u.uid === m.id).groupName });
+          }
+          return c;
+        })
+      );
   }
 
   // öffnet den Chat Tab mit Übergabe der Datenbank ChatID
