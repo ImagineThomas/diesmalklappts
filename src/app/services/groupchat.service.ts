@@ -60,7 +60,7 @@ export class GroupchatService {
       .valueChanges({ idField: 'uid' }) as Observable<GroupChat[]>;
   }
 
-  async getChatMessages(currentUserUid, chatId): Promise<any> {
+    getChatMessages(currentUserUid, chatId){
     const messages = this.afs
       .collection(`groupchats/${chatId}/messages`, (ref) => ref.orderBy('createdAt'))
       .valueChanges({ idField: 'id' }) as Observable<Message[]>;
@@ -95,9 +95,9 @@ export class GroupchatService {
   }
 
   // öffnet den Chat Tab mit Übergabe der Datenbank ChatID
-  async openGroupChat(chatId: string, chatName: string, profileId: string) {
+  async openGroupChat(chatId: string, groupName: string, profileId: string) {
     this.router.navigate(['/groupchat'], {
-      queryParams: { cid: chatId, cName: chatName, userId: profileId },
+      queryParams: { cid: chatId, gName: groupName, userId: profileId },
     });
   }
 }

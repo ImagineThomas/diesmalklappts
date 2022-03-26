@@ -35,10 +35,17 @@ const routes: Routes = [
   },
 
   {
+    path: 'groupchat',
+    loadChildren: () => import('./groupchat/groupchat.module').then( m => m.GroupchatPageModule)
+  },
+
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full',
   },
+
+
 
 ];
  
