@@ -62,7 +62,7 @@ export class GroupchatSetupPage implements OnInit {
       await alert.present();
     }
     else {
-      // wenn die email schon drin ist nimm sie raus und pack sie neu rein (später bessere Lösung)
+      // wenn die email schon drin ist nimm sie raus und pack sie neu rein
       await this.deleteFromGroup(this.groupMemberInput);
       this.groupMember.push(this.groupMemberInput);
       this.groupMemberInput = "";

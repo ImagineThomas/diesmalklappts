@@ -65,9 +65,7 @@ export class GroupchatService {
       })
     );
   }
-
-
-  
+ 
   getGroupChats(currentUserUid) {
     const groupchats = this.afs
       .collection(`users/${currentUserUid}/groupchats`)

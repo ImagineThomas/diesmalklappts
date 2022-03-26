@@ -18,8 +18,6 @@ export class AuthService {
     private firestore: Firestore) {}
     profile = null;
 
-
-
   async register({ email, password }) {
     try {
       const user = await createUserWithEmailAndPassword(
@@ -27,9 +25,7 @@ export class AuthService {
         email,
         password
       );
-
-     
-            
+       
       this.profilePictureService.getUserProfile().subscribe((data) => {
         this.profile = data;
       });
@@ -40,7 +36,6 @@ export class AuthService {
         uid: user.user.uid,
       });  
 
-
       const keyPair = await window.crypto.subtle.generateKey(
         {
           name: "ECDH",
@@ -49,8 +44,7 @@ export class AuthService {
         true,
         ["deriveKey", "deriveBits"]
       );
-    
-      
+  
       const publicKeyJwk = await window.crypto.subtle.exportKey(
         "jwk",
         keyPair.publicKey
@@ -61,9 +55,6 @@ export class AuthService {
         keyPair.privateKey
       );
     
-        
-      
-
         const user1DocRef = doc(this.firestore, `users/${this.profile.id}`);
         await setDoc(user1DocRef, {
           
@@ -79,14 +70,12 @@ export class AuthService {
           },
             { merge: true });
 
-
       return user;
     } catch (e) {
       return null;
     }
   }
 
- 
   async login({ email, password }) {
     try {
       const user = await signInWithEmailAndPassword(this.auth, email, password);

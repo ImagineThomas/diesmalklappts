@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, getDoc, doc} from '@angular/fire/firestore';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -12,10 +11,8 @@ export class CryptoserviceService {
 
   ) { }
 
-
   privateKeyFromDB;
   publicKeyFromDB;
-  
 
   async getPrKeyAndPuKeyFromDBAndCreateDerivedKey1(chatRecepient:string, currentUserID: string ) {
     const keyDocRef = await doc(this.firestore, `prKeys/${currentUserID}`)
@@ -26,9 +23,6 @@ export class CryptoserviceService {
     const docSnap2= await getDoc(keyDocRef2)
       this.publicKeyFromDB = docSnap2.data().publicKeyRecipient
       
-
-
-
     const publicKey = await window.crypto.subtle.importKey(
       "jwk",
      await this.publicKeyFromDB,
@@ -58,14 +52,8 @@ export class CryptoserviceService {
       true,
       ["encrypt", "decrypt"]
     );
-
     
-
-
      return derivedKey
-
-    
-
   }
 
   async encryptWithDerKey1(chatMsg: string, derivedKey){
@@ -78,12 +66,9 @@ export class CryptoserviceService {
       encodedText
     );
   
-    const uintArray = new Uint8Array(encryptedData);
-  
-    const string = String.fromCharCode.apply(null, uintArray);
-  
-    const base64Data = btoa(string);
-  
+    const uintArray = new Uint8Array(encryptedData);  
+    const string = String.fromCharCode.apply(null, uintArray);  
+    const base64Data = btoa(string); 
     const encryptedChatMsg = base64Data;
     
     return encryptedChatMsg
@@ -112,7 +97,6 @@ export class CryptoserviceService {
       
       const decryptedChatMsg = new TextDecoder().decode(decryptedData);
       
-
       return decryptedChatMsg
     } catch (e) {
       console.log( `error decrypting message: ${e}`);
