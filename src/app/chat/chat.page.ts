@@ -49,15 +49,15 @@ export class ChatPage implements OnInit {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       this.chatRecipient = doc.id;
-      console.log(this.chatRecipient)
+      
     }); 
     //mit ChatID später umschreiben
     //UserID 1 und 2 einsetzen 
     this.derivedKey = await this.cryptoserviceService.getPrKeyAndPuKeyFromDBAndCreateDerivedKey1(this.chatRecipient, this.userId )
-    console.log(this.derivedKey)
+    
     
     this.messages = await this.chatService.getChatMessages(this.userId, this.chatId, this.derivedKey);
-    console.log(this.messages)
+    
   }
 
   async sendMessage() {
@@ -66,7 +66,7 @@ export class ChatPage implements OnInit {
     querySnapshot.forEach((doc) => {
      this.chatRecipient = doc.id;
     });
-    console.log(this.chatRecipient)
+    
 
     this.chatService.addChatMessage(this.chatId, this.newMsg, this.userId, this.chatRecipient).then(() => {
       this.newMsg = '';

@@ -66,7 +66,7 @@ export class AuthService {
 
         const user1DocRef = doc(this.firestore, `users/${this.profile.id}`);
         await setDoc(user1DocRef, {
-          //["Keytesto"]: [publicKeyJwk, privateKeyJwk]
+          
           email,
           ["PublicKey"]: [publicKeyJwk]
         },
@@ -74,7 +74,7 @@ export class AuthService {
       
           const user2DocRef = doc(this.firestore, `prKeys/${this.profile.id}`);
           await setDoc(user2DocRef, {
-            //["Keytesto"]: [publicKeyJwk, privateKeyJwk]
+            
             ["PrivateKey"]: [privateKeyJwk]
           },
             { merge: true });

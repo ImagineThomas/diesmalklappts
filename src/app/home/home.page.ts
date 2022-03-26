@@ -86,7 +86,7 @@ export class HomePage {
       const keyDocRef2 = doc(this.firestore, "users/" + this.searchedUser)
       const docSnap2= await getDoc(keyDocRef2)
       this.publicKeyFromDB = docSnap2.data().PublicKey[0]
-      console.log(this.publicKeyFromDB);
+      
       //
       await setDoc(doc(this.firestore, `users/${this.profile.id}/chats/${this.searchedUser}`), {
         chatId: slicedChatPath,
@@ -97,7 +97,7 @@ export class HomePage {
       const keyDocRef3 = doc(this.firestore, "users/" + this.profile.id)
       const docSnap3= await getDoc(keyDocRef3)
       this.publicKeyFromDB = docSnap3.data().PublicKey[0]
-      console.log(this.publicKeyFromDB);
+      
       //pubKey von sendendem User bei searchedUser
       await setDoc(doc(this.firestore, `users/${this.searchedUser}/chats/${this.profile.id}`), {
         chatId: slicedChatPath,

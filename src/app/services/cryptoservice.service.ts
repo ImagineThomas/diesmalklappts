@@ -31,11 +31,11 @@ export class CryptoserviceService {
     const keyDocRef = await doc(this.firestore, `prKeys/${currentUserID}`)
     const docSnap= await getDoc(keyDocRef)
       this.privateKeyFromDB = docSnap.data().PrivateKey[0]
-      console.log(this.privateKeyFromDB);
+      
     const keyDocRef2 = await doc(this.firestore, "users/" + currentUserID + "/chats/" + chatRecepient)
     const docSnap2= await getDoc(keyDocRef2)
       this.publicKeyFromDB = docSnap2.data().publicKeyRecipient
-      console.log(this.publicKeyFromDB);
+      
 
 
 
@@ -69,7 +69,7 @@ export class CryptoserviceService {
       ["encrypt", "decrypt"]
     );
 
-    console.log(derivedKey)
+    
 
 
      return derivedKey
@@ -102,28 +102,26 @@ export class CryptoserviceService {
 
 
   async decryptWithDerivedKey1(encryptedChatMsg, derivedKey){
-    console.log(encryptedChatMsg)
-    console.log(derivedKey)
+    
     try {
       const string = atob(encryptedChatMsg);
       const uintArray = new Uint8Array(
         [...string].map((char) => char.charCodeAt(0))
       );
-      console.log(uintArray)
+      
       const algorithm = {
         name: "AES-GCM",
         iv: new TextEncoder().encode("Initialization Vector"),
       };
-      console.log(derivedKey)
-      console.log(algorithm)
+      
       const decryptedData = await window.crypto.subtle.decrypt(
         algorithm,
         derivedKey,
         uintArray
       );
-      console.log(decryptedData)
+      
       const decryptedChatMsg = new TextDecoder().decode(decryptedData);
-      console.log(await decryptedChatMsg)
+      
 
       return decryptedChatMsg
     } catch (e) {

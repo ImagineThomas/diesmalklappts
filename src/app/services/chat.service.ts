@@ -36,7 +36,7 @@ export class ChatService {
   async addChatMessage(chatId, msg, currentUserUId, chatRecepient) {
     
   const d = await this.cryptoserviceService.getPrKeyAndPuKeyFromDBAndCreateDerivedKey1(chatRecepient, currentUserUId )
-  console.log(d)
+  
     msg = await this.cryptoserviceService.encryptWithDerKey1(msg, d)
     return await this.afs.collection(`chats/${chatId}/messages`).add({
       "msg": msg,
