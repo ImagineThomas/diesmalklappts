@@ -25,7 +25,7 @@ export class HomePage {
   chatExists: boolean;
   publicKeyFromDB;
   chats: Observable<{ id: string, email: string }[]>;
-  groupChats: Observable<{id: string}[]>;
+  groupChats: Observable<{id: string, groupName: string}[]>;
 
   constructor(
     private profilePictureService: ProfilePictureService,
@@ -43,7 +43,7 @@ export class HomePage {
     this.profilePictureService.getUserProfile().subscribe((data) => {
       this.profile = data;
       this.chats = chatServices.getChats(data.id);
-      this.groupChats = gcs.getGroupChats(data.id)
+      this.groupChats = gcs.getGroupChats(data.id);
     });
   }
   // loggt den User aus
@@ -154,8 +154,8 @@ export class HomePage {
     }
   }
 
-  async openGroupChat(groupChatID : string){
-    this.gcs.openGroupChat( groupChatID);
+  async openGroupChat(groupChatId : string, chatName: string){
+    this.gcs.openGroupChat( groupChatId, chatName, this.profile.id);
   }
 
 }

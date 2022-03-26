@@ -43,7 +43,7 @@
 
   <div *ngIf="groupChats |async as gc">
     <div *ngFor="let m of gc">
-      <ion-button type="button" expand="block" color="secondary" (click)="openGroupChat(m.id)"></ion-button>
+      <ion-button type="button" expand="block" color="secondary" (click)="openGroupChat(m.id, m.groupName)"></ion-button>
     </div>
   </div>
 </ion-content>
