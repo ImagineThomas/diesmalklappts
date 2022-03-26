@@ -87,6 +87,9 @@ export class GroupchatSetupPage implements OnInit {
         groupName: this.groupName,
       })
     }
+    await setDoc(doc(this.firestore, `users/${this.profile.id}/groupchats/${slicedChatPath}`), {
+      groupName: this.groupName,
+    })
 
     const alert = await this.alertController.create({
       header: 'Erfolgreich',
