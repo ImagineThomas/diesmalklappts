@@ -22,6 +22,7 @@ export class HomePage {
   searchedUser: string = '';
   chatIdForUrl: string;
   chatExists: boolean;
+  publicKeyFromDB;
   chats: Observable<{ id: string, email: string }[]>;
   constructor(
     private profilePictureService: ProfilePictureService,
@@ -81,14 +82,26 @@ export class HomePage {
       //umformen von der Reference zu einem ChatID String da man damit besser arbeiten kann
       var chatPath = chatUser.path;
       var slicedChatPath = chatPath.slice(6);
+      //pubKey von searchedUser
+      const keyDocRef2 = doc(this.firestore, "users/" + this.searchedUser)
+      const docSnap2= await getDoc(keyDocRef2)
+      this.publicKeyFromDB = docSnap2.data().PublicKey[0]
+      console.log(this.publicKeyFromDB);
+      //
       await setDoc(doc(this.firestore, `users/${this.profile.id}/chats/${this.searchedUser}`), {
         chatId: slicedChatPath,
         recipientId: this.searchedUser,
-        publicKeyRecipient: "PublicKey2",
+        publicKeyRecipient: this.publicKeyFromDB,
       });
+      //pubKey von currentUser
+      const keyDocRef3 = doc(this.firestore, "users/" + this.profile.id)
+      const docSnap3= await getDoc(keyDocRef3)
+      this.publicKeyFromDB = docSnap3.data().PublicKey[0]
+      console.log(this.publicKeyFromDB);
+      //pubKey von sendendem User bei searchedUser
       await setDoc(doc(this.firestore, `users/${this.searchedUser}/chats/${this.profile.id}`), {
         chatId: slicedChatPath,
-        publicKeyRecipient: "PublicKey1",
+        publicKeyRecipient: this.publicKeyFromDB,
       });
       this.fillContactlist(this.searchedUser, this.profile.id);
       this.fillContactlist(this.profile.id, this.searchedUser);

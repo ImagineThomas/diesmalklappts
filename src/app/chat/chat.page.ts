@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Firestore} from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, getDoc} from '@angular/fire/firestore';
 import { ProfilePictureService } from '../services/profile-picture.service';
 import { Observable } from 'rxjs';
 import { ChatService } from '../services/chat.service';
 import { IonContent } from '@ionic/angular';
-
+import { collection, query, where, getDocs} from "firebase/firestore";
+import { CryptoserviceService } from '../services/cryptoservice.service';
 
 @Component({
   selector: 'app-chat',
@@ -21,6 +22,8 @@ export class ChatPage implements OnInit {
   email: string;
   message: string;
   userId: string;
+  chatRecipient: string
+  derivedKey;
 
   constructor(
     private router: Router,
@@ -28,22 +31,44 @@ export class ChatPage implements OnInit {
     private firestore: Firestore,
     private profilePictureService: ProfilePictureService,
     private chatService: ChatService,
+    private cryptoserviceService: CryptoserviceService,
   ) {
   }
 
-  ngOnInit() {
+
+
+  async ngOnInit(): Promise<any> {
     this.userId = this.route.snapshot.queryParamMap.get('userId');
     // erhält die ChatId aus der URL bei Chatinitialisierung
     this.chatId = this.route.snapshot.queryParamMap.get('id');
     // erhält email des Chatpartners aus der URL bei Chatinitialisierung
     this.email = this.route.snapshot.queryParamMap.get('email');
-    this.messages = this.chatService.getChatMessages(this.userId, this.chatId);
-
     
+        //UserID des gegenüber holen
+  const q = await query(collection(this.firestore, "users"), where("email", "==", this.email));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      this.chatRecipient = doc.id;
+      console.log(this.chatRecipient)
+    }); 
+    //mit ChatID später umschreiben
+    //UserID 1 und 2 einsetzen 
+    this.derivedKey = await this.cryptoserviceService.getPrKeyAndPuKeyFromDBAndCreateDerivedKey1(this.chatRecipient, this.userId )
+    console.log(this.derivedKey)
+    
+    this.messages = await this.chatService.getChatMessages(this.userId, this.chatId, this.derivedKey);
+    console.log(this.messages)
   }
 
-  sendMessage() {
-    this.chatService.addChatMessage(this.chatId, this.newMsg, this.userId).then(() => {
+  async sendMessage() {
+    const q = query(collection(this.firestore, "users"), where("email", "==", this.email));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+     this.chatRecipient = doc.id;
+    });
+    console.log(this.chatRecipient)
+
+    this.chatService.addChatMessage(this.chatId, this.newMsg, this.userId, this.chatRecipient).then(() => {
       this.newMsg = '';
       this.content.scrollToBottom();
     });

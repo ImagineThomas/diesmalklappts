@@ -12,13 +12,13 @@
 <ion-content class="ion-padding">
  
   <ion-grid>
-    <ion-row *ngFor="let message of messages | async">
+    <ion-row *ngFor="let message of messages | async">            
       <ion-col size="9" class="message"
         [offset]="message.myMsg ? 3 : 0"
         [ngClass]="{ 'my-message': message.myMsg, 'other-message': !message.myMsg }">
-        <b>{{ message.fromName }}</b><br>
-        <span>{{ message.msg }}
-        </span>
+        <b>{{ message.fromName }}</b><br>        
+          <span>{{ message.msg }}         
+      </span>
         <div class="time ion-text-right"><br>{{ message.createdAt?.toMillis() | date:'short' }}</div>
       </ion-col>
     </ion-row>

@@ -4,7 +4,6 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { Auth } from '@angular/fire/auth';
-import { ProfilePictureService } from '../services/profile-picture.service';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { Firestore, getDoc, addDoc, doc, setDoc } from '@angular/fire/firestore';
 import { ChatPageModule } from '../chat/chat.module';
@@ -15,7 +14,6 @@ import { ChatPageModule } from '../chat/chat.module';
 export class CryptoserviceService {
 
   constructor(
-    private profilePictureService: ProfilePictureService,
     private authService: AuthService,
     private router: Router,
     private loadingController: LoadingController,
@@ -27,29 +25,23 @@ export class CryptoserviceService {
 
   privateKeyFromDB;
   publicKeyFromDB;
-  profile = null;
+  
 
-  async getPrKeyAndPuKeyFromDBAndCreateDerivedKey1(chatRecepient:string ) {
-    
-    const q1 = query(collection(this.firestore,  `PrKeys/${this.profile.id}`));
-    const querySnapshot3 = await getDocs(q1);
-    querySnapshot3.forEach((doc) => {
-      this.privateKeyFromDB = doc.data().PrivateKey[0]; 
+  async getPrKeyAndPuKeyFromDBAndCreateDerivedKey1(chatRecepient:string, currentUserID: string ) {
+    const keyDocRef = await doc(this.firestore, `prKeys/${currentUserID}`)
+    const docSnap= await getDoc(keyDocRef)
+      this.privateKeyFromDB = docSnap.data().PrivateKey[0]
       console.log(this.privateKeyFromDB);
-    })
-
-   // const qs3 = query(collection(this.firestore,  `PrKeys/${searchedUser}`));
-    const q2 = query(collection(this.firestore,  `users/${chatRecepient}`));
-    const querySnapshot4 = await getDocs(q2);
-    querySnapshot4.forEach((doc) => {
-      this.publicKeyFromDB = doc.data().PublicKey[0]; 
+    const keyDocRef2 = await doc(this.firestore, "users/" + currentUserID + "/chats/" + chatRecepient)
+    const docSnap2= await getDoc(keyDocRef2)
+      this.publicKeyFromDB = docSnap2.data().publicKeyRecipient
       console.log(this.publicKeyFromDB);
-    })
+
 
 
     const publicKey = await window.crypto.subtle.importKey(
       "jwk",
-      this.publicKeyFromDB,
+     await this.publicKeyFromDB,
       {
         name: "ECDH",
         namedCurve: "P-256",
@@ -60,7 +52,7 @@ export class CryptoserviceService {
   
     const privateKey = await window.crypto.subtle.importKey(
       "jwk",
-      this.privateKeyFromDB,
+      await this.privateKeyFromDB,
       {
         name: "ECDH",
         namedCurve: "P-256",
@@ -71,7 +63,7 @@ export class CryptoserviceService {
   
     const derivedKey = await window.crypto.subtle.deriveKey(
       { name: "ECDH", public: publicKey },
-      privateKey,
+      await privateKey,
       { name: "AES-GCM", length: 256 },
       true,
       ["encrypt", "decrypt"]
@@ -110,23 +102,30 @@ export class CryptoserviceService {
 
 
   async decryptWithDerivedKey1(encryptedChatMsg, derivedKey){
+    console.log(encryptedChatMsg)
+    console.log(derivedKey)
     try {
       const string = atob(encryptedChatMsg);
       const uintArray = new Uint8Array(
         [...string].map((char) => char.charCodeAt(0))
       );
+      console.log(uintArray)
       const algorithm = {
         name: "AES-GCM",
         iv: new TextEncoder().encode("Initialization Vector"),
       };
+      console.log(derivedKey)
+      console.log(algorithm)
       const decryptedData = await window.crypto.subtle.decrypt(
         algorithm,
         derivedKey,
         uintArray
       );
-  
+      console.log(decryptedData)
       const decryptedChatMsg = new TextDecoder().decode(decryptedData);
-      console.log(decryptedChatMsg)
+      console.log(await decryptedChatMsg)
+
+      return decryptedChatMsg
     } catch (e) {
       console.log( `error decrypting message: ${e}`);
     }
