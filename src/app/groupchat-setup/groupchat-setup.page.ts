@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProfilePictureService } from '../services/profile-picture.service';
-import { Firestore, addDoc, doc, setDoc, getDoc } from '@angular/fire/firestore';
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { Firestore, addDoc, doc, setDoc} from '@angular/fire/firestore';
+import { collection} from "firebase/firestore";
 import { DatabaseOperationsService } from '../services/database-operations.service';
 import { AlertController } from '@ionic/angular';
 

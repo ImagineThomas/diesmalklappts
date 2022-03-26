@@ -5,7 +5,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { Auth } from '@angular/fire/auth';
 import { ProfilePictureService } from '../services/profile-picture.service';
-import { collection, query, where, getDocs} from "firebase/firestore";
+import { collection} from "firebase/firestore";
 import { Firestore, addDoc, doc, setDoc, getDoc } from '@angular/fire/firestore';
 import { ChatService } from '../services/chat.service';
 import { Observable } from 'rxjs';

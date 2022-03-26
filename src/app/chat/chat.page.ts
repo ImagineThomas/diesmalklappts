@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Firestore, doc, setDoc, getDoc} from '@angular/fire/firestore';
+import { Firestore} from '@angular/fire/firestore';
 import { ProfilePictureService } from '../services/profile-picture.service';
 import { Observable } from 'rxjs';
 import { ChatService } from '../services/chat.service';

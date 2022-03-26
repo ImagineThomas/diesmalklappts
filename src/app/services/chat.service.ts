@@ -5,8 +5,6 @@ import { combineLatest, Observable } from 'rxjs';
 import { AngularFirestore} from '@angular/fire/compat/firestore/';
 import { Router } from '@angular/router';
 import { CryptoserviceService } from '../services/cryptoservice.service';
-import { doc, docData, Firestore, setDoc, getDoc } from '@angular/fire/firestore';
-import { collection, query, where, getDocs} from "firebase/firestore";
 
 
 
