@@ -9,7 +9,7 @@ import {
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['home']);
  
-// es fehlt die Überprüfung, ob jemand befugt ist den Chat zu öffnen -> jeder Chat könnte über URL Manipulation gefunden und geöffnet werden
+// es fehlt die Überprüfung, ob jemand befugt ist den Chat zu öffnen -> jede Page könnte über URL Manipulation gefunden und geöffnet werden (solange man eingeloggt ist)
 // Nachrichten bei 1:1 Chats werden dann aber verschlüsselt dargestellt
 
 const routes: Routes = [
