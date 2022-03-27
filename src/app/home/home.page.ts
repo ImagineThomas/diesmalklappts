@@ -3,9 +3,8 @@ import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
-import { Auth } from '@angular/fire/auth';
 import { ProfilePictureService } from '../services/profile-picture.service';
-import { collection} from "firebase/firestore";
+import { collection } from "firebase/firestore";
 import { Firestore, addDoc, doc, setDoc, getDoc } from '@angular/fire/firestore';
 import { ChatService } from '../services/chat.service';
 import { Observable } from 'rxjs';
@@ -25,7 +24,7 @@ export class HomePage {
   chatExists: boolean;
   publicKeyFromDB;
   chats: Observable<{ id: string, email: string }[]>;
-  groupChats: Observable<{id: string, groupName: string}[]>;
+  groupChats: Observable<{ id: string, groupName: string }[]>;
 
   constructor(
     private profilePictureService: ProfilePictureService,
@@ -36,7 +35,7 @@ export class HomePage {
     private firestore: Firestore,
     private chatServices: ChatService,
     private dos: DatabaseOperationsService,
-    private gcs : GroupchatService,
+    private gcs: GroupchatService,
 
   ) {
 
@@ -76,59 +75,70 @@ export class HomePage {
   // generiert chat mit einem anderen User oder öffnet ihn nur falls schon vorhanden
   async generateChatWithUser() {
     // ermitteln der Uid der eigegebenen Mail
+    this.dos.searchedUser = "";
     await this.dos.findUserWithMail(this.email);
-    this.searchedUser = this.dos.searchedUser;
-    // prüfen, ob ein Chat mit dem gesuchten User schon existiert
-    await this.checkForExistingChatWithUser(this.profile.id, this.searchedUser);
-    if (this.chatExists == false) {
-      const chatUser = await addDoc(collection(this.firestore, "chats"), {
+    if (this.dos.searchedUser == "") {
+      const alert = await this.alertController.create({
+        header: 'User nicht gefunden',
+        message: 'Diese Email ist nicht in der Datenbank hinterlegt',
+        buttons: ['OK'],
       });
-      //umformen von der Reference zu einem ChatID String da man damit besser arbeiten kann
-      var chatPath = chatUser.path;
-      var slicedChatPath = chatPath.slice(6);
-      //pubKey von searchedUser
-      const keyDocRef2 = doc(this.firestore, "users/" + this.searchedUser)
-      const docSnap2= await getDoc(keyDocRef2)
-      this.publicKeyFromDB = docSnap2.data().PublicKey[0]
-      
-      //
-      await setDoc(doc(this.firestore, `users/${this.profile.id}/chats/${this.searchedUser}`), {
-        chatId: slicedChatPath,
-        recipientId: this.searchedUser,
-        publicKeyRecipient: this.publicKeyFromDB,
-      });
-      //pubKey von currentUser
-      const keyDocRef3 = doc(this.firestore, "users/" + this.profile.id)
-      const docSnap3= await getDoc(keyDocRef3)
-      this.publicKeyFromDB = docSnap3.data().PublicKey[0]
-      
-      //pubKey von sendendem User bei searchedUser
-      await setDoc(doc(this.firestore, `users/${this.searchedUser}/chats/${this.profile.id}`), {
-        chatId: slicedChatPath,
-        publicKeyRecipient: this.publicKeyFromDB,
-      });
-      this.fillContactlist(this.searchedUser, this.profile.id);
-      this.fillContactlist(this.profile.id, this.searchedUser);
-      this.chatServices.openChat(slicedChatPath, this.email, this.profile.id);
+      await alert.present();
     }
     else {
-      this.chatServices.openChat(this.chatIdForUrl, this.email, this.profile.id);
+      this.searchedUser = this.dos.searchedUser;
+      // prüfen, ob ein Chat mit dem gesuchten User schon existiert
+      await this.checkForExistingChatWithUser(this.profile.id, this.searchedUser);
+      if (this.chatExists == false) {
+        const chatUser = await addDoc(collection(this.firestore, "chats"), {
+        });
+        //umformen von der Reference zu einem ChatID String da man damit besser arbeiten kann
+        var chatPath = chatUser.path;
+        var slicedChatPath = chatPath.slice(6);
+        //pubKey von searchedUser
+        const keyDocRef2 = doc(this.firestore, "users/" + this.searchedUser)
+        const docSnap2 = await getDoc(keyDocRef2)
+        this.publicKeyFromDB = docSnap2.data().PublicKey[0]
 
+        //
+        await setDoc(doc(this.firestore, `users/${this.profile.id}/chats/${this.searchedUser}`), {
+          chatId: slicedChatPath,
+          recipientId: this.searchedUser,
+          publicKeyRecipient: this.publicKeyFromDB,
+        });
+        //pubKey von currentUser
+        const keyDocRef3 = doc(this.firestore, "users/" + this.profile.id)
+        const docSnap3 = await getDoc(keyDocRef3)
+        this.publicKeyFromDB = docSnap3.data().PublicKey[0]
+
+        //pubKey von sendendem User bei searchedUser
+        await setDoc(doc(this.firestore, `users/${this.searchedUser}/chats/${this.profile.id}`), {
+          chatId: slicedChatPath,
+          publicKeyRecipient: this.publicKeyFromDB,
+        });
+        this.fillContactlist(this.searchedUser, this.profile.id);
+        this.fillContactlist(this.profile.id, this.searchedUser);
+        this.chatServices.openChat(slicedChatPath, this.email, this.profile.id);
+      }
+      else {
+        this.chatServices.openChat(this.chatIdForUrl, this.email, this.profile.id);
+
+      }
     }
   }
 
-  async openChat(recipientId: string, recipient: string){
+  async openChat(recipientId: string, recipient: string) {
     await this.checkForExistingChatWithUser(this.profile.id, recipientId);
     this.chatServices.openChat(this.chatIdForUrl, recipient, this.profile.id);
   }
 
 
-  async openGroupchatSetupPage(){
+  async openGroupchatSetupPage() {
     this.router.navigate(['/groupchat-setup']);
   }
 
-  async openGroupChat(groupChatId : string, groupName: string){
-    this.gcs.openGroupChat( groupChatId, groupName, this.profile.id);
+  async openGroupChat(groupChatId: string, groupName: string) {
+    this.gcs.openGroupChat(groupChatId, groupName, this.profile.id);
   }
 
   // gibt dem User die Möglichkeit ein Profilbild zu machen

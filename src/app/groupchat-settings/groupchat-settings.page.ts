@@ -41,7 +41,7 @@ export class GroupchatSettingsPage implements OnInit {
     await this.dos.adminStatusFinder(this.dos.searchedUser, this.chatId);
     if(this.dos.searchedUser == "" || this.dos.admin == true){
       const alert = await this.alertController.create({
-        header: 'Hinzufügen fehlgeschlagen',
+        header: 'Entfernen fehlgeschlagen',
         message: 'Diese Email ist nicht in der Datenbank hinterlegt oder dieser User ist Admin',
         buttons: ['OK'],
       });
