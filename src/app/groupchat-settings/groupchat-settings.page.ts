@@ -34,13 +34,15 @@ export class GroupchatSettingsPage implements OnInit {
     this.router.navigateByUrl('home', { replaceUrl: true });
   }
 
+  // entfernt user aus der Gruppe -> Admins können nicht entfernt werden
   async deleteUserFromGroup() {
     this.dos.searchedUser = "";
+    await this.dos.adminStatusFinder(this.deleteMemberInput, this.chatId);
     await this.dos.findUserWithMail(this.deleteMemberInput);
-    if(this.dos.searchedUser == ""){
+    if(this.dos.searchedUser == "" || this.dos.admin == true){
       const alert = await this.alertController.create({
         header: 'Hinzufügen fehlgeschlagen',
-        message: 'Diese Email ist nicht in der Datenbank hinterlegt',
+        message: 'Diese Email ist nicht in der Datenbank hinterlegt oder dieser User ist Admin',
         buttons: ['OK'],
       });
       await alert.present();
@@ -60,7 +62,7 @@ export class GroupchatSettingsPage implements OnInit {
 
   }
 
-    //es fehlt Funktion die prüft, ob jemand schon Teil der Gruppe ist !! -> admin status wird bei bereits vorhandenen wieder auf false gesetzt
+  //es fehlt Funktion die prüft, ob jemand schon Teil der Gruppe ist !! -> admin der bereits vorhanden ist wird wieder auf false gesetzt
   async addUserToGroup() {
     this.dos.searchedUser = "";
     await this.dos.findUserWithMail(this.addMemberInput);
