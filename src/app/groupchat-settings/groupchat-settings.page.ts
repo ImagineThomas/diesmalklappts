@@ -37,8 +37,8 @@ export class GroupchatSettingsPage implements OnInit {
   // entfernt user aus der Gruppe -> Admins können nicht entfernt werden
   async deleteUserFromGroup() {
     this.dos.searchedUser = "";
-    await this.dos.adminStatusFinder(this.deleteMemberInput, this.chatId);
     await this.dos.findUserWithMail(this.deleteMemberInput);
+    await this.dos.adminStatusFinder(this.dos.searchedUser, this.chatId);
     if(this.dos.searchedUser == "" || this.dos.admin == true){
       const alert = await this.alertController.create({
         header: 'Hinzufügen fehlgeschlagen',
