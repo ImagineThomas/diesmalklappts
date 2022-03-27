@@ -9,6 +9,9 @@ import {
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['home']);
  
+// es fehlt die Überprüfung, ob jemand befugt ist den Chat zu öffnen -> jeder Chat könnte über URL Manipulation gefunden und geöffnet werden
+// Nachrichten bei 1:1 Chats werden dann aber verschlüsselt dargestellt
+
 const routes: Routes = [
   {
     path: '',
@@ -36,7 +39,14 @@ const routes: Routes = [
 
   {
     path: 'groupchat',
-    loadChildren: () => import('./groupchat/groupchat.module').then( m => m.GroupchatPageModule)
+    loadChildren: () => import('./groupchat/groupchat.module').then( m => m.GroupchatPageModule),
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+
+  {
+    path: 'groupchat-settings',
+    loadChildren: () => import('./groupchat-settings/groupchat-settings.module').then( m => m.GroupchatSettingsPageModule),
+    ...canActivate(redirectUnauthorizedToLogin),
   },
 
   {
@@ -44,6 +54,8 @@ const routes: Routes = [
     redirectTo: '',
     pathMatch: 'full',
   },
+
+
 
 
 

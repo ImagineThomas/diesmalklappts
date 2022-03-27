@@ -50,6 +50,7 @@ export class GroupchatSetupPage implements OnInit {
     }
   }
 
+  // fügt Member erstmal einem Array hinzu -> Richtig hinzugefügt werden sie bei Gruppeninitialisierung "setupGroup()"
   async addToGroup() {
     this.dos.searchedUser = "";
     await this.dos.findUserWithMail(this.groupMemberInput);
@@ -71,7 +72,7 @@ export class GroupchatSetupPage implements OnInit {
     }
   }
 
-
+  // erstellt eine neue Gruppe unter "groupchats" und fügt in jedem User Dokument eine "Verlinkung" für den Chat ein
   async setupGroup() {
     const groupChatRef = await addDoc(collection(this.firestore, "groupchats"), {
       groupName: this.groupName,
@@ -84,14 +85,12 @@ export class GroupchatSetupPage implements OnInit {
         email: this.groupMember[i],
         admin: false,
       });
-      await setDoc(doc(this.firestore, `users/${groupMemberId}/groupchats/${slicedChatPath}`), {
-        groupName: this.groupName,
-      })
+      await setDoc(doc(this.firestore, `users/${groupMemberId}/groupchats/${slicedChatPath}`), {})
     }
     await setDoc(doc(this.firestore, `users/${this.profile.id}/groupchats/${slicedChatPath}`), {
       groupName: this.groupName,
     });
-    await setDoc(doc(this.firestore, `groupchats/${slicedChatPath}/groupmember/${this.profile.de}`), {
+    await setDoc(doc(this.firestore, `groupchats/${slicedChatPath}/groupmember/${this.profile.id}`), {
       email: this.profile.email,
       admin: true,
     });

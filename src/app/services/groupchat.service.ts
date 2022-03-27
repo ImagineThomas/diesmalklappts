@@ -100,4 +100,10 @@ export class GroupchatService {
       queryParams: { cid: chatId, gName: groupName, userId: profileId },
     });
   }
+
+  async openGroupChatSettings(chatId: string){
+    this.router.navigate(['/groupchat-settings'],{
+      queryParams: {cid: chatId},
+    });
+  }
 }

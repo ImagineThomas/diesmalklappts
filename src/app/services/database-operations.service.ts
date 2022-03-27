@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { collection, query, where, getDocs} from "firebase/firestore";
+import { collection, query, where, getDocs, getDoc, doc} from "firebase/firestore";
 import { Firestore,} from '@angular/fire/firestore';
 
 @Injectable({
@@ -8,6 +8,7 @@ import { Firestore,} from '@angular/fire/firestore';
 export class DatabaseOperationsService {
 
   searchedUser: string = "";
+  admin: boolean = false;
   constructor(
     private firestore: Firestore,
   ) { }
@@ -20,5 +21,11 @@ export class DatabaseOperationsService {
       querySnapshot.forEach((doc) => {
         this.searchedUser = doc.id;
       });
+    }
+
+    async adminStatusFinder(userId: string, groupChatId: string){
+      const docRef = doc(this.firestore, `groupchats/${groupChatId}/groupmember/${userId}`);
+      const docSnap = await getDoc(docRef);
+      this.admin = docSnap.data().admin;
     }
 }

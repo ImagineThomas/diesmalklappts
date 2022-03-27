@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="backToHome()">
+        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Gruppenchat Einstellungen</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div>
+    <ion-input placeholder="email" [(ngModel)]="deleteMemberInput"></ion-input>
+    <ion-button type="button" expand="block" color="secondary" (click)="deleteUserFromGroup()">aus der Gruppe entfernen</ion-button>
+    <br>
+    <br>
+    <ion-input placeholder="email" [(ngModel)]="addMemberInput"></ion-input>
+    <ion-button type="button" expand="block" color="secondary" (click)="addUserToGroup()">der Gruppe hinzufügen</ion-button>
+    <br>
+    <br>
+    <ion-input placeholder="email"[(ngModel)]="addAdminInput"></ion-input>
+    <ion-button type="button" expand="block" color="secondary" (click)="addAdminStatus()">als Admin hinzufügen</ion-button>
+  </div>
+</ion-content>
