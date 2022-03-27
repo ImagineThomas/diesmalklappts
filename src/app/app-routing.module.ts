@@ -11,6 +11,7 @@ const redirectLoggedInToHome = () => redirectLoggedInTo(['home']);
  
 // es fehlt die Überprüfung, ob jemand befugt ist den Chat zu öffnen -> jede Page könnte über URL Manipulation gefunden und geöffnet werden (solange man eingeloggt ist)
 // Nachrichten bei 1:1 Chats werden dann aber verschlüsselt dargestellt
+// in der mobile App kein Problem
 
 const routes: Routes = [
   {
